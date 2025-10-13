@@ -90,6 +90,11 @@
                     <argLine>@{argLine} -javaagent:"${settings.localRepository}/org/mockito/mockito-core/${mockito.version}/mockito-core-${mockito.version}.jar"</argLine>
                 </configuration>
             </plugin>
+            <plugin>
+                <groupId>org.flywaydb</groupId>
+                <artifactId>flyway-maven-plugin</artifactId>
+                <version>10.20.1</version>
+            </plugin>
 
         </plugins>
     </build>
