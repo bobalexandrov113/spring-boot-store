@@ -1,0 +1,12 @@
+spring:
+  application:
+    name: store
+  datasource:
+    url: jdbc:mysql://localhost:3306/store?createIfNotExist=true
+    username: root
+    password: 2MuchTime!
+  flyway:
+    baseline-on-migrate: true
+datasets:
+  ccdp_dataset_name: product_common_claim_dev_st9
+  ccdp_dataset_internal: product_common_claim_internaldev_st9
