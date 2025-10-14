@@ -36,4 +36,10 @@ public class User {
         address.setUser(this);
 
      }
+
+     public void  removeAddress(Address address)
+     {
+        this.addresses.remove(address);
+        address.setUser(null);
+     }
 }
