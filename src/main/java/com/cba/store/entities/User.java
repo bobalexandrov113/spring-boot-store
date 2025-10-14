@@ -3,6 +3,9 @@ package com.cba.store.entities;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Getter
 @Setter
 @Entity
@@ -22,4 +25,15 @@ public class User {
     private String email;
     @Column(nullable = false,name = "password")
     private String password;
+
+    @OneToMany(mappedBy = "user")
+    @Builder.Default
+    private List<Address> addresses = new ArrayList<>();
+
+    public void addAddress(Address address)
+     {
+        this.addresses.add(address);
+        address.setUser(this);
+
+     }
 }

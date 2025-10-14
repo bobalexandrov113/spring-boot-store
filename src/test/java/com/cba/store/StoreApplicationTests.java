@@ -30,6 +30,15 @@ class StoreApplicationTests {
                 .id(1L)
                 .email("bob@myhost.com")
                 .build();
+        var address = Address.builder()
+                .Id(1L)
+                .street("123 Main St")
+                .city("Berlin")
+                .state("Nike")
+                .zip("12345")
+                .build();
+        user.addAddress(address);
+
 
         System.out.println("***************** TESTING USER ******************");
         System.out.printf("User: %s%n", user);

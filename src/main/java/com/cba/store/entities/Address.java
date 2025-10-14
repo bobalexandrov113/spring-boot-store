@@ -29,4 +29,9 @@ public class Address {
     @Column(name="zip",nullable = false)
     private String zip;
 
+
+    @ManyToOne
+    @JoinColumn(name="user_id")
+    @ToString.Exclude
+    private User user;
 }
