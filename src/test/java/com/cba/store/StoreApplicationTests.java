@@ -1,5 +1,7 @@
 package com.cba.store;
 
+import com.cba.store.entities.Address;
+import com.cba.store.entities.Tag;
 import com.cba.store.entities.User;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Value;
@@ -14,8 +16,10 @@ class StoreApplicationTests {
 
     @Test
     void contextLoads() {
+        System.out.println("***************** TESTING app values ******************");
         System.out.println(name);
         System.out.println(datasetName);
+        System.out.println("***************** DONE TESTING app values ******************");
     }
 
     @Test
@@ -27,7 +31,34 @@ class StoreApplicationTests {
                 .email("bob@myhost.com")
                 .build();
 
+        System.out.println("***************** TESTING USER ******************");
         System.out.printf("User: %s%n", user);
+        System.out.println("********** Done testing USER ***************");
     }
 
+    @Test
+    void testAddress() {
+        var address = Address.builder()
+                .Id(1L)
+                .street("123 Main St")
+                .city("Berlin")
+                .state("Nike")
+                .zip("12345")
+                .build();
+        System.out.println("***************** TESTING ADDRESS ******************");
+        System.out.printf("Address: %s%n", address);
+        System.out.println("********** Done testing ADDRESS ***************");
+    }
+
+
+    @Test
+    void tesTag() {
+        var tag = Tag.builder()
+                .id(1L)
+                .name("developer")
+                .build();
+        System.out.println("***************** TESTING Tag ******************");
+        System.out.printf("Tag: %s%n", tag);
+        System.out.println("********** Done testing Tag ***************");
+    }
 }
