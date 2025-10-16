@@ -1,6 +1,7 @@
 package com.cba.store;
 
 import com.cba.store.entities.Address;
+import com.cba.store.entities.Profile;
 import com.cba.store.entities.Tag;
 import com.cba.store.entities.User;
 import org.junit.jupiter.api.Test;
@@ -70,4 +71,41 @@ class StoreApplicationTests {
         System.out.printf("Tag: %s%n", tag);
         System.out.println("********** Done testing Tag ***************");
     }
+
+    @Test
+    void testUserTag() {
+        var user = User.builder()
+                .name("John")
+                .password("1234")
+                .id(1L)
+                .email("bob@myhost.com")
+                .build();
+        var tag = new Tag("developer");
+        user.getTags().add(tag);
+        System.out.println("***************** TESTING USER TAG ******************");
+
+
+    }
+
+    @Test
+    void testUserProfile() {
+        var user = User.builder()
+                .name("John")
+                .password("1234")
+                .id(1L)
+                .email("bob@myhost.com")
+                .build();
+
+        var profile = Profile.builder()
+                        .bio("bio")
+                                .build();
+        profile.setUser(user);
+        user.setProfile(profile);
+
+
+        System.out.println("***************** TESTING PROFILE ******************");
+        System.out.printf("Tag: %s%n", user);
+        System.out.println("********** Done testing PROFILE ***************");
+    }
+
 }
