@@ -1,20 +1,15 @@
 package com.cba.store.entities;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.math.BigDecimal;
 
-@AllArgsConstructor
-@NoArgsConstructor
 @Getter
 @Setter
 @Entity
-
-@Table(name="products")
+@Table(name = "products")
 public class Product {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -24,10 +19,14 @@ public class Product {
     @Column(name = "name")
     private String name;
 
-    @Column(name = "price")
+    @Column(name = "description", length = 1000)
+    private String description;
+
+    @Column(name = "price", precision = 10, scale = 2)
     private BigDecimal price;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id")
     private Category category;
+
 }

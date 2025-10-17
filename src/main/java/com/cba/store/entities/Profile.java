@@ -32,7 +32,7 @@ public class Profile {
     private int loyaltyPoints;
 
     @OneToOne
-    @JoinColumn()
+    @JoinColumn(name = "id")
     @ToString.Exclude
     private User user;
 }
