@@ -3,6 +3,7 @@ package com.cba.store.controllers;
 import com.cba.store.dtos.UserDto;
 import com.cba.store.entities.User;
 import com.cba.store.mappers.UserMapper;
+import com.cba.store.mappers.UserMapperImpl;
 import com.cba.store.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -29,7 +30,8 @@ public class UserController {
        List<UserDto> list =repository
                .findAll()
                .stream()
-               .map(user->userMapper.userToUserDto(user))
+               //.map(user->userMapper.userToUserDto(user))
+               .map(userMapper::userToUserDto)
                .toList();
 
        if(list.isEmpty())
@@ -45,8 +47,8 @@ public class UserController {
        if (user == null)
            return ResponseEntity.notFound().build();
        else {
-           UserDto userDto = new UserDto(user.getId(), user.getName(), user.getEmail());
-           return ResponseEntity.ok(userDto);
+
+           return ResponseEntity.ok(userMapper.userToUserDto(user));
        }
     }
 }
