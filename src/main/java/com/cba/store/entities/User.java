@@ -3,15 +3,10 @@ package com.cba.store.entities;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
 @Getter
 @Setter
 @Entity
-@Table(name="users")
+@Table(name = "users", schema = "store")
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
@@ -20,41 +15,16 @@ import java.util.Set;
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
+    @Column(name = "id", nullable = false)
     private Long id;
-    @Column(nullable = false,name = "name")
+
+    @Column(name = "name", nullable = false)
     private String name;
-    @Column(nullable = false,name = "email")
+
+    @Column(name = "email", nullable = false)
     private String email;
-    @Column(nullable = false,name = "password")
+
+    @Column(name = "password", nullable = false)
     private String password;
-
-    @OneToMany(mappedBy = "user")
-    @Builder.Default
-    private List<Address> addresses = new ArrayList<>();
-
-    public void addAddress(Address address)
-     {
-        this.addresses.add(address);
-        address.setUser(this);
-
-     }
-
-     public void  removeAddress(Address address)
-     {
-        this.addresses.remove(address);
-        address.setUser(null);
-     }
-     @ManyToMany
-     @JoinTable(
-             name="user_tags",
-             joinColumns = @JoinColumn(name="user_id"),
-             inverseJoinColumns = @JoinColumn(name = "tag_id")
-     )
-
-     @Builder.Default
-    private Set<Tag> tags = new HashSet<>();
-    @OneToOne(mappedBy = "user")
-    private Profile profile;
 
 }

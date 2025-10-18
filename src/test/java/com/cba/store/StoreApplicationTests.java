@@ -1,12 +1,15 @@
 package com.cba.store;
 
 import com.cba.store.entities.Address;
-import com.cba.store.entities.Profile;
-import com.cba.store.entities.Tag;
+import com.cba.store.entities.Product;
 import com.cba.store.entities.User;
+import com.cba.store.repositories.UserRepository;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
+
+import java.math.BigDecimal;
 
 @SpringBootTest
 class StoreApplicationTests {
@@ -31,14 +34,8 @@ class StoreApplicationTests {
                 .id(1L)
                 .email("bob@myhost.com")
                 .build();
-        var address = Address.builder()
-                .Id(1L)
-                .street("123 Main St")
-                .city("Berlin")
-                .state("Nike")
-                .zip("12345")
-                .build();
-        user.addAddress(address);
+
+
 
 
         System.out.println("***************** TESTING USER ******************");
@@ -49,7 +46,7 @@ class StoreApplicationTests {
     @Test
     void testAddress() {
         var address = Address.builder()
-                .Id(1L)
+                .id(1)
                 .street("123 Main St")
                 .city("Berlin")
                 .state("Nike")
@@ -58,54 +55,27 @@ class StoreApplicationTests {
         System.out.println("***************** TESTING ADDRESS ******************");
         System.out.printf("Address: %s%n", address);
         System.out.println("********** Done testing ADDRESS ***************");
-    }
-
-
-    @Test
-    void tesTag() {
-        var tag = Tag.builder()
-                .id(1L)
-                .name("developer")
-                .build();
-        System.out.println("***************** TESTING Tag ******************");
-        System.out.printf("Tag: %s%n", tag);
-        System.out.println("********** Done testing Tag ***************");
-    }
-
-    @Test
-    void testUserTag() {
-        var user = User.builder()
-                .name("John")
-                .password("1234")
-                .id(1L)
-                .email("bob@myhost.com")
-                .build();
-        var tag = new Tag("developer");
-        user.getTags().add(tag);
-        System.out.println("***************** TESTING USER TAG ******************");
-
 
     }
 
     @Test
-    void testUserProfile() {
-        var user = User.builder()
-                .name("John")
-                .password("1234")
+    void testProduct() {
+        var product = Product.builder()
                 .id(1L)
-                .email("bob@myhost.com")
+                .name("John wax")
+                .price(BigDecimal.valueOf(125.23))
+                .categoryId((byte) 1)
                 .build();
-
-        var profile = Profile.builder()
-                        .bio("bio")
-                                .build();
-        profile.setUser(user);
-        user.setProfile(profile);
-
-
-        System.out.println("***************** TESTING PROFILE ******************");
-        System.out.printf("Tag: %s%n", user);
-        System.out.println("********** Done testing PROFILE ***************");
+        System.out.println("***************** TESTING PRODUCT ******************");
+        System.out.printf("Address: %s%n", product);
+        System.out.println("********** Done testing PRODUCT ***************");
     }
+
+
+
+
+
+
+
 
 }

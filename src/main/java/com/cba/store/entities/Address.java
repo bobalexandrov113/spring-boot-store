@@ -3,35 +3,31 @@ package com.cba.store.entities;
 import jakarta.persistence.*;
 import lombok.*;
 
-@Entity
-@Table(name="addresses")
-@NoArgsConstructor
-@AllArgsConstructor
 @Getter
 @Setter
+@Entity
+@Table(name = "addresses", schema = "store")
+@AllArgsConstructor
+@NoArgsConstructor
 @Builder
 @ToString
 
 public class Address {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long Id;
+    @Column(name = "id", nullable = false)
+    private Integer id;
 
-    @Column(name =  "street",nullable = false)
+    @Column(name = "street")
     private String street;
 
-    @Column(name="city",nullable = false)
+    @Column(name = "city")
     private String city;
 
-    @Column(name="state",nullable = false)
-    private String state;
-
-    @Column(name="zip",nullable = false)
+    @Column(name = "zip", nullable = false)
     private String zip;
 
+    @Column(name = "state")
+    private String state;
 
-    @ManyToOne
-    @JoinColumn(name="user_id")
-    @ToString.Exclude
-    private User user;
 }
