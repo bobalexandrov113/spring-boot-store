@@ -6,6 +6,7 @@ import com.cba.store.entities.User;
 import com.cba.store.repositories.UserRepository;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 
@@ -17,6 +18,8 @@ class StoreApplicationTests {
     String name;
     @Value("${datasets.ccdp_dataset_name}")
     String datasetName;
+    @Autowired
+    private UserRepository userRepository;
 
     @Test
     void contextLoads() {
@@ -41,6 +44,28 @@ class StoreApplicationTests {
         System.out.println("***************** TESTING USER ******************");
         System.out.printf("User: %s%n", user);
         System.out.println("********** Done testing USER ***************");
+    }
+
+    @Test
+    void testUserRepository() {
+
+//       var user = User.builder()
+//               .name("Bob")
+//               .password("password")
+//               .email("bob@myhost.com")
+//               .build();
+//       repository.save(user);
+
+
+
+        var user = userRepository.findById(2L).orElseThrow(()->new RuntimeException("User not found"));
+
+
+        System.out.println("***************** TESTING USER REPOSITORY******************");
+        System.out.printf("User: %s%n", user);
+        System.out.println(user.getEmail());
+        System.out.println(user.getPassword());
+        System.out.println("********** Done testing USER REPOSITORY***************");
     }
 
     @Test
