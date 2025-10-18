@@ -2,6 +2,7 @@ package com.cba.store.controllers;
 
 import com.cba.store.dtos.UserDto;
 import com.cba.store.entities.User;
+import com.cba.store.mappers.UserMapper;
 import com.cba.store.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -19,6 +20,8 @@ import java.util.List;
 public class UserController {
     @Autowired
     private UserRepository repository;
+    @Autowired
+    private UserMapper userMapper;
 
     @GetMapping
     public ResponseEntity<List<UserDto>> findAll()
@@ -26,7 +29,7 @@ public class UserController {
        List<UserDto> list =repository
                .findAll()
                .stream()
-               .map(user->new UserDto(user.getId(), user.getName(), user.getEmail()))
+               .map(user->userMapper.userToUserDto(user))
                .toList();
 
        if(list.isEmpty())
