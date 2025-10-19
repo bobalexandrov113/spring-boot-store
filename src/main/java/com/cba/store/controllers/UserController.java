@@ -25,10 +25,12 @@ public class UserController {
 
     @GetMapping
     public ResponseEntity<List<UserDto>> getAllUsers(
+            @RequestHeader(name = "x-auth-token") String authToken,
             @RequestParam(required = false, defaultValue = "", name = "sort") String sort
     )
     {
-       if(!Set.of("id","name","email").contains(sort))
+        System.out.println(authToken);
+        if(!Set.of("id","name","email").contains(sort))
            sort = "name";
         List<UserDto> list =repository
                .findAll( Sort.by(sort).ascending( ) )
@@ -41,6 +43,13 @@ public class UserController {
            return ResponseEntity.notFound().build();
        else return ResponseEntity.ok().body(list);
 
+    }
+    @PostMapping
+    public ResponseEntity<UserDto> createUser(@RequestBody UserDto userDto) {
+        System.out.println(userDto.getId());
+        System.out.println(userDto.getName());
+        System.out.println(userDto.getEmail());
+        return ResponseEntity.ok(userDto);
     }
 
     @GetMapping("/{id}")
