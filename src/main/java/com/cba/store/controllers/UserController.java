@@ -1,14 +1,15 @@
 package com.cba.store.controllers;
 
+import com.cba.store.dtos.ChangePasswordRequest;
 import com.cba.store.dtos.RegisterUserRequest;
 import com.cba.store.dtos.UpdateUserRequest;
 import com.cba.store.dtos.UserDto;
 import com.cba.store.entities.User;
 import com.cba.store.mappers.UserMapper;
-import com.cba.store.mappers.UserMapperImpl;
 import com.cba.store.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -91,7 +92,26 @@ public class UserController {
             return ResponseEntity.notFound().build();
         else {
             repository.delete(user);
-            return ResponseEntity.ok().build();
+            return ResponseEntity.noContent().build();
         }
+    }
+
+
+    @PostMapping("/{id}/change-password")
+    public  ResponseEntity<?> changePassword(@PathVariable Long id, @RequestBody ChangePasswordRequest request)
+    {
+        var user = repository.findById(id).orElse(null);
+        if(user == null)
+            return ResponseEntity.notFound().build();
+
+        if(!user.getPassword().equals(request.getOldPassword()))
+        {
+            return new ResponseEntity<>("Old password doesn't match", HttpStatus.UNAUTHORIZED);
+        }
+
+        user.setPassword(request.getNewPassword());
+        repository.save(user);
+        return ResponseEntity.noContent().build();
+
     }
 }
