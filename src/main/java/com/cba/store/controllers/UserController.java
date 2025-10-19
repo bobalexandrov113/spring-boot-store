@@ -1,5 +1,6 @@
 package com.cba.store.controllers;
 
+import com.cba.store.dtos.RegisterUserRequest;
 import com.cba.store.dtos.UserDto;
 import com.cba.store.entities.User;
 import com.cba.store.mappers.UserMapper;
@@ -10,6 +11,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -45,11 +47,14 @@ public class UserController {
 
     }
     @PostMapping
-    public ResponseEntity<UserDto> createUser(@RequestBody UserDto userDto) {
-        System.out.println(userDto.getId());
-        System.out.println(userDto.getName());
-        System.out.println(userDto.getEmail());
-        return ResponseEntity.ok(userDto);
+    public ResponseEntity<UserDto> createUser(@RequestBody RegisterUserRequest request) {
+        var user = userMapper.toEntity(request);
+        System.out.println(user);
+        repository.save(user);
+        UserDto userDto = userMapper.userToUserDto(user);
+        var uri = URI.create("/users/" + user.getId());
+        return ResponseEntity.created(uri).body(userDto);
+
     }
 
     @GetMapping("/{id}")
