@@ -1,6 +1,7 @@
 package com.cba.store.controllers;
 
 import com.cba.store.dtos.RegisterUserRequest;
+import com.cba.store.dtos.UpdateUserRequest;
 import com.cba.store.dtos.UserDto;
 import com.cba.store.entities.User;
 import com.cba.store.mappers.UserMapper;
@@ -67,5 +68,18 @@ public class UserController {
 
            return ResponseEntity.ok(userMapper.userToUserDto(user));
        }
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<UserDto> updateUserById(@PathVariable Long id, @RequestBody UpdateUserRequest request)
+    {
+        var user = repository.findById(id).orElse(null);
+        if(user == null)
+            return ResponseEntity.notFound().build();
+        else {
+            userMapper.updateUser(request, user);
+            repository.save(user);
+            return ResponseEntity.ok().body(userMapper.userToUserDto(user));
+        }
     }
 }
