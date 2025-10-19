@@ -44,6 +44,36 @@ public class ProductController {
 
     }
 
+    @GetMapping("/productsCategory")
+    public ResponseEntity<List<ProductDto>> getAllProductsByCategoryId(
+            @RequestParam(required = false, defaultValue = "1", name = "categoryId") Byte categoryId
+    )
+    {
+
+        List<Product> products ;
+
+        if(categoryId != null)
+        {
+            products = productRepository.findByCategoryId(categoryId);
+        }
+        else
+        {
+            products = productRepository.findAll();
+
+        }
+
+        if(products.isEmpty())
+            return ResponseEntity.notFound().build();
+
+        return ResponseEntity.ok(
+
+                products.stream()
+                        .map(productMapper::productToProductDto)
+                        .toList()
+        );
+
+    }
+
     @GetMapping("/{id}")
     public ResponseEntity<ProductDto> getProduct(@PathVariable Long id)
     {
@@ -52,5 +82,6 @@ public class ProductController {
             return ResponseEntity.notFound().build();
         return ResponseEntity.ok(productMapper.productToProductDto(product));
     }
+
 
 }
