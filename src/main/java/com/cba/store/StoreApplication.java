@@ -21,9 +21,9 @@ public class StoreApplication {
 
 
 
-      var user = repository.findById(2L).orElseThrow(()->new RuntimeException("User not found"));
-        System.out.println(user.getEmail());
-        System.out.println(user);
+//      var user = repository.findById(2L).orElseThrow(()->new RuntimeException("User not found"));
+//        System.out.println(user.getEmail());
+//        System.out.println(user);
 
 //     repository.deleteAll();
     }

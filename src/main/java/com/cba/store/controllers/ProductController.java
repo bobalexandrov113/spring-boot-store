@@ -1,14 +1,17 @@
 package com.cba.store.controllers;
 
 import com.cba.store.dtos.ProductDto;
+import com.cba.store.dtos.RegisterProductRequest;
 import com.cba.store.entities.Product;
 import com.cba.store.mappers.ProductMapper;
 import com.cba.store.repositories.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.net.URI;
 import java.util.List;
 import java.util.Set;
 
@@ -83,5 +86,25 @@ public class ProductController {
         return ResponseEntity.ok(productMapper.productToProductDto(product));
     }
 
+    @PostMapping
+    public ResponseEntity<ProductDto> createProduct(@RequestBody RegisterProductRequest request)
+    {
+        var product = productMapper.toEntity(request);
+        product = productRepository.save(product);
+        var uri = URI.create("/products/" + product.getId());
+        ProductDto productDto = productMapper.productToProductDto(product);
+        return ResponseEntity.created(uri).body(productDto);
 
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<ProductDto> updateProductById(@PathVariable Long id, @RequestBody RegisterProductRequest request)
+    {
+        var product = productRepository.findById(id).orElse(null);
+        if(product == null)
+            return ResponseEntity.notFound().build();
+        productMapper.updateProduct(request, product);
+        productRepository.save(product);
+        return ResponseEntity.ok(productMapper.productToProductDto(product));
+    }
 }

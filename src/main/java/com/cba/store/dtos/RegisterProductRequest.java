@@ -1,6 +1,5 @@
 package com.cba.store.dtos;
 
-import jakarta.persistence.Column;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -13,9 +12,7 @@ import java.math.BigDecimal;
 @NoArgsConstructor
 @Getter
 @Setter
-public class ProductDto {
-    private Long id;
-
+public class RegisterProductRequest {
     private String name;
 
     private String description;
