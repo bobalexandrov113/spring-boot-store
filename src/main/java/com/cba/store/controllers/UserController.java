@@ -7,14 +7,17 @@ import com.cba.store.dtos.UserDto;
 import com.cba.store.entities.User;
 import com.cba.store.mappers.UserMapper;
 import com.cba.store.repositories.UserRepository;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
 
@@ -49,7 +52,8 @@ public class UserController {
 
     }
     @PostMapping
-    public ResponseEntity<UserDto> createUser(@RequestBody RegisterUserRequest request) {
+    public ResponseEntity<UserDto> createUser(
+            @Valid @RequestBody RegisterUserRequest request) {
         var user = userMapper.toEntity(request);
         System.out.println(user);
         repository.save(user);
@@ -114,4 +118,9 @@ public class UserController {
         return ResponseEntity.noContent().build();
 
     }
+
+
+
+
+
 }
