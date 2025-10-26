@@ -5,6 +5,7 @@ import com.cba.store.dtos.RegisterProductRequest;
 import com.cba.store.entities.Product;
 import com.cba.store.mappers.ProductMapper;
 import com.cba.store.repositories.ProductRepository;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 @RestController
@@ -87,8 +89,16 @@ public class ProductController {
     }
 
     @PostMapping
-    public ResponseEntity<ProductDto> createProduct(@RequestBody RegisterProductRequest request)
+    public ResponseEntity<?> registerProduct(
+            @Valid @RequestBody RegisterProductRequest request
+    )
     {
+        if(productRepository.existsByName(request.getName()))
+        {
+            return ResponseEntity.badRequest().body(
+                    Map.of("product","product already exists")
+            );
+        }
         var product = productMapper.toEntity(request);
         product = productRepository.save(product);
         var uri = URI.create("/products/" + product.getId());
