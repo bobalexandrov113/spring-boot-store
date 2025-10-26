@@ -16,6 +16,6 @@ public class RegisterUserRequest {
     @Lowercase(message = "email has to be in lowercase")
     private String email;
     @NotBlank(message = "Password is required")
-    @Size(min=1,max=6,message = "Password must be between 1 and 6 characters")
+    @Size(min=6,max=9,message = "Password must be between 6 and 9 characters")
     private String password;
 }

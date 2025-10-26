@@ -12,13 +12,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 @RestController
@@ -26,7 +24,7 @@ import java.util.Set;
 @RequestMapping("/users")
 public class UserController {
     @Autowired
-    private UserRepository repository;
+    private UserRepository userRepository;
     @Autowired
     private UserMapper userMapper;
 
@@ -39,7 +37,7 @@ public class UserController {
         System.out.println(authToken);
         if(!Set.of("id","name","email").contains(sort))
            sort = "name";
-        List<UserDto> list =repository
+        List<UserDto> list = userRepository
                .findAll( Sort.by(sort).ascending( ) )
                .stream()
                //.map(user->userMapper.userToUserDto(user))
@@ -52,11 +50,16 @@ public class UserController {
 
     }
     @PostMapping
-    public ResponseEntity<UserDto> createUser(
+    public ResponseEntity<?> registerUser(
             @Valid @RequestBody RegisterUserRequest request) {
+        if(userRepository.existsByEmail(request.getEmail())){
+            return ResponseEntity.badRequest().body(
+                    Map.of("email","Email has already been registered")
+                   );
+        }
         var user = userMapper.toEntity(request);
         System.out.println(user);
-        repository.save(user);
+        userRepository.save(user);
         UserDto userDto = userMapper.userToUserDto(user);
         var uri = URI.create("/users/" + user.getId());
         return ResponseEntity.created(uri).body(userDto);
@@ -66,7 +69,7 @@ public class UserController {
     @GetMapping("/{id}")
     public ResponseEntity<UserDto> findUserById(@PathVariable Long id)
     {
-       User user = repository.findById(id).orElse(null);
+       User user = userRepository.findById(id).orElse(null);
        if (user == null)
            return ResponseEntity.notFound().build();
        else {
@@ -78,12 +81,12 @@ public class UserController {
     @PutMapping("/{id}")
     public ResponseEntity<UserDto> updateUserById(@PathVariable Long id, @RequestBody UpdateUserRequest request)
     {
-        var user = repository.findById(id).orElse(null);
+        var user = userRepository.findById(id).orElse(null);
         if(user == null)
             return ResponseEntity.notFound().build();
         else {
             userMapper.updateUser(request, user);
-            repository.save(user);
+            userRepository.save(user);
             return ResponseEntity.ok().body(userMapper.userToUserDto(user));
         }
     }
@@ -91,11 +94,11 @@ public class UserController {
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteUserById(@PathVariable Long id)
     {
-        var user = repository.findById(id).orElse(null);
+        var user = userRepository.findById(id).orElse(null);
         if(user == null)
             return ResponseEntity.notFound().build();
         else {
-            repository.delete(user);
+            userRepository.delete(user);
             return ResponseEntity.noContent().build();
         }
     }
@@ -104,7 +107,7 @@ public class UserController {
     @PostMapping("/{id}/change-password")
     public  ResponseEntity<?> changePassword(@PathVariable Long id, @RequestBody ChangePasswordRequest request)
     {
-        var user = repository.findById(id).orElse(null);
+        var user = userRepository.findById(id).orElse(null);
         if(user == null)
             return ResponseEntity.notFound().build();
 
@@ -114,7 +117,7 @@ public class UserController {
         }
 
         user.setPassword(request.getNewPassword());
-        repository.save(user);
+        userRepository.save(user);
         return ResponseEntity.noContent().build();
 
     }
