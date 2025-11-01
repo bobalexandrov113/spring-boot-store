@@ -11,6 +11,7 @@ import java.util.UUID;
 @Data
 public class CartDto {
     private UUID id;
-    private LocalDate dateCreated;
+    private List<CartItemDto> cartItemDtos=new  ArrayList<>();
+    private BigDecimal price= BigDecimal.ZERO;
 
 }

@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponentsBuilder;
 
-
+@AllArgsConstructor
 @RestController
 @RequestMapping("/carts")
 
@@ -22,10 +22,7 @@ public class CartController {
 
     private final CartMapper cartMapper;
 
-    public CartController(CartRepository cartRepository, CartMapper cartMapper) {
-        this.cartRepository = cartRepository;
-        this.cartMapper = cartMapper;
-    }
+
 
     @PostMapping
     public ResponseEntity<CartDto> createCart() {
