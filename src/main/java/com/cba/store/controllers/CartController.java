@@ -69,6 +69,7 @@ public class CartController {
         }
         cartRepository.save(cart);
         var cartItemDto = cartItemMapper.toDto(cartItem);
-        return ResponseEntity.ok(cartItemDto);
+        var uri = UriComponentsBuilder.fromHttpUrl("/carts/" + cart.getId()).build().toUri();
+        return ResponseEntity.created(uri).body(cartItemDto);
     }
 }
