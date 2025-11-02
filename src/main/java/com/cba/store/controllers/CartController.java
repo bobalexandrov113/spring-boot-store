@@ -3,6 +3,7 @@ package com.cba.store.controllers;
 import com.cba.store.dtos.AddItemToCartRequest;
 import com.cba.store.dtos.CartDto;
 import com.cba.store.dtos.CartItemDto;
+import com.cba.store.dtos.UpdateCartItemRequest;
 import com.cba.store.entities.Cart;
 import com.cba.store.entities.CartItem;
 import com.cba.store.mappers.CartItemMapper;
@@ -10,9 +11,11 @@ import com.cba.store.mappers.CartMapper;
 import com.cba.store.repositories.CartRepository;
 import com.cba.store.repositories.ProductRepository;
 import lombok.AllArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
+import java.util.Map;
 
 import java.util.UUID;
 
@@ -81,5 +84,36 @@ public class CartController {
         }
         var cartDto = cartMapper.toDto(cart);
         return ResponseEntity.ok(cartDto);
+    }
+
+    @PutMapping("/{cartId}/items/{productId}")
+    public ResponseEntity<?>updateItem
+            (
+                   @PathVariable("cartId") UUID cartId,
+                   @PathVariable("productId") Long productId,
+                   @RequestBody UpdateCartItemRequest request
+            )
+    {
+        var cart = cartRepository.findById(cartId).orElse(null);
+
+        if (cart == null) {
+            return ResponseEntity.notFound().build();
+        }
+
+        var cartItem = cart.getItems().stream()
+                .filter(cartItemDto -> cartItemDto.getProduct().getId().equals(productId) )
+                .findFirst()
+                .orElse(null);
+        if (cartItem == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
+                    Map.of("error","Cart not found")
+            );
+        }
+
+        cartItem.setQuantity(request.getQuantity());
+        cartRepository.save(cart);
+
+        return ResponseEntity.ok(cartMapper.toDto(cartItem));
+
     }
 }
