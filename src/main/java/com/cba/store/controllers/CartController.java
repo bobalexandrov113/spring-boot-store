@@ -10,7 +10,6 @@ import com.cba.store.mappers.CartMapper;
 import com.cba.store.repositories.CartRepository;
 import com.cba.store.repositories.ProductRepository;
 import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -53,7 +52,7 @@ public class CartController {
             return ResponseEntity.badRequest().build();
         }
 
-        var cartItem = cart.getCartItems().stream()
+        var cartItem = cart.getItems().stream()
                 .filter(cartItemDto -> cartItemDto.getProduct().getId().equals(product.getId()) )
                 .findFirst()
                 .orElse(null);
@@ -65,11 +64,22 @@ public class CartController {
             cartItem.setProduct(product);
             cartItem.setQuantity(1);
             cartItem.setCart(cart);
-            cart.getCartItems().add(cartItem);
+            cart.getItems().add(cartItem);
         }
         cartRepository.save(cart);
         var cartItemDto = cartItemMapper.toDto(cartItem);
         var uri = UriComponentsBuilder.fromHttpUrl("/carts/" + cart.getId()).build().toUri();
         return ResponseEntity.created(uri).body(cartItemDto);
+    }
+
+
+    @GetMapping("/{cartId}")
+    public ResponseEntity<CartDto> getCart(@PathVariable UUID cartId) {
+        var cart = cartRepository.findById(cartId).orElse(null);
+        if (cart == null) {
+            return ResponseEntity.notFound().build();
+        }
+        var cartDto = cartMapper.toDto(cart);
+        return ResponseEntity.ok(cartDto);
     }
 }
