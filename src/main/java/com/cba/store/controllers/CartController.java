@@ -5,6 +5,7 @@ import com.cba.store.dtos.CartDto;
 import com.cba.store.dtos.CartItemDto;
 import com.cba.store.entities.Cart;
 import com.cba.store.entities.CartItem;
+import com.cba.store.mappers.CartItemMapper;
 import com.cba.store.mappers.CartMapper;
 import com.cba.store.repositories.CartRepository;
 import com.cba.store.repositories.ProductRepository;
@@ -26,6 +27,7 @@ public class CartController {
 
     private final CartMapper cartMapper;
     private final ProductRepository productRepository;
+    private final CartItemMapper cartItemMapper;
 
 
     @PostMapping
@@ -65,6 +67,8 @@ public class CartController {
             cartItem.setCart(cart);
             cart.getCartItems().add(cartItem);
         }
-        return ResponseEntity.ok(null);
+        cartRepository.save(cart);
+        var cartItemDto = cartItemMapper.toDto(cartItem);
+        return ResponseEntity.ok(cartItemDto);
     }
 }
