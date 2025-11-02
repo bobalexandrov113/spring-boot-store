@@ -7,11 +7,8 @@ import com.cba.store.dtos.UpdateCartItemRequest;
 import com.cba.store.exceptions.CartItemNotFoundException;
 import com.cba.store.exceptions.CartNotFoundException;
 import com.cba.store.exceptions.ProductNotFoundException;
-import com.cba.store.mappers.CartItemMapper;
-import com.cba.store.mappers.CartMapper;
-import com.cba.store.repositories.CartRepository;
-import com.cba.store.repositories.ProductRepository;
 import com.cba.store.services.CartService;
+import io.swagger.v3.oas.annotations.Parameter;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -27,11 +24,6 @@ import java.util.UUID;
 
 public class CartController {
 
-    private final CartRepository cartRepository;
-
-    private final CartMapper cartMapper;
-    private final ProductRepository productRepository;
-    private final CartItemMapper cartItemMapper;
     private final CartService cartService;
 
 
@@ -44,7 +36,8 @@ public class CartController {
 
     @PostMapping("/{cartId}/items")
     public ResponseEntity<CartItemDto> addToCart
-            (@PathVariable UUID cartId,
+            (@Parameter(description = "The id of the cart")
+                    @PathVariable UUID cartId,
              @RequestBody AddItemToCartRequest request)
     {
         var productId = request.getProductId();
