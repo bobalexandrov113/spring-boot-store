@@ -31,10 +31,12 @@ public class AuthController {
     }
 
     @PostMapping("/validate")
-    public boolean validate(@RequestHeader("Authorization") String token)
+    public boolean validate(@RequestHeader("Authorization") String authHeader)
     {
+        System.out.println("Validate called");
+        var token = authHeader.replace("Bearer ", "");
 
-        return true;
+        return jwtService.validateToken(token);
     }
 
 
