@@ -1,5 +1,8 @@
 package com.cba.store.services;
 
+import com.cba.store.dtos.AuthRequestDto;
+import com.cba.store.entities.User;
+import com.cba.store.repositories.UserRepository;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -11,16 +14,20 @@ import java.util.Date;
 
 @Service
 public class JwtService {
-    private JwtService jwtService;
+    UserRepository userRepository;
 
     @Value("${spring.jwt.secret}")
     private String secret;
 
-    public String generateToken(String email)
+    public String generateToken(User user)
     {
-        final long tokenExpiration = 86400;
+        final long tokenExpiration = 8640000;
+
+
         return Jwts.builder()
-                .subject(email)
+                .subject(user.getId().toString())
+                .claim("email",user.getEmail())
+                .claim("name",user.getName())
                 .issuedAt(new Date())
                 .expiration(new Date(System.currentTimeMillis() + tokenExpiration))
                 .signWith(Keys.hmacShaKeyFor(secret.getBytes()), SignatureAlgorithm.HS256)
@@ -47,8 +54,18 @@ public class JwtService {
                 .getPayload();
     }
 
+    public String getUsernameFromToken(String token)
+    {
+        return (String) getClaims(token).get("name");
+    }
     public String getEmailFromToken(String token)
     {
-        return getClaims(token).getSubject();
+        var claims = getClaims(token);
+        return (String) claims.get("email");
+    }
+
+    public Long getUserIdFromToken(String token)
+    {
+        return Long.valueOf(getClaims(token).getSubject());
     }
 }

@@ -2,6 +2,7 @@ package com.cba.store.controllers;
 
 import com.cba.store.dtos.AuthRequestDto;
 import com.cba.store.dtos.JwtResponse;
+import com.cba.store.dtos.UserDto;
 import com.cba.store.entities.User;
 import com.cba.store.mappers.UserMapper;
 import com.cba.store.repositories.UserRepository;
@@ -29,7 +30,9 @@ public class AuthController {
        authenticationManager.authenticate(
                new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword())
        );
-       var token = jwtService.generateToken(request.getEmail());
+       var userOptional = userRepository.findByEmail(request.getEmail());
+       var user = userOptional.get();
+       var token = jwtService.generateToken(user);
 
         return ResponseEntity.ok(new JwtResponse(token));
     }
@@ -47,16 +50,13 @@ public class AuthController {
     public ResponseEntity<?> getCurrentUser()
     {
         var authentication = SecurityContextHolder.getContext().getAuthentication();
-        var email = (String)authentication.getPrincipal();
-
-        var userOptional = userRepository.findByEmail(email);
-        if (userOptional == null)
+        var userId = (Long)authentication.getPrincipal();
+        var userOptional = userRepository.findById(userId);
+        var user = userOptional.get();
+        if(user == null)
             return ResponseEntity.notFound().build();
 
-        var user = userOptional.get();
-        var userDto = userMapper.userToUserDto((User)user);
-
-        return ResponseEntity.ok(userDto);
+        return ResponseEntity.ok(userMapper.userToUserDto(user));
 
     }
 
