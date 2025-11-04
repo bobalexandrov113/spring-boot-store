@@ -1,6 +1,9 @@
 package com.cba.store.controllers;
 
 import com.cba.store.dtos.AuthRequestDto;
+import com.cba.store.dtos.JwtResponse;
+import com.cba.store.services.JwtService;
+import io.jsonwebtoken.Jwt;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -13,15 +16,18 @@ import org.springframework.web.bind.annotation.*;
 @AllArgsConstructor
 public class AuthController {
     private final AuthenticationManager authenticationManager;
+    private final JwtService jwtService;
 
 
 
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody AuthRequestDto request){
+    public ResponseEntity<JwtResponse> login(@RequestBody AuthRequestDto request){
        authenticationManager.authenticate(
                new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword())
        );
-        return ResponseEntity.ok().body("Welcome");
+       var token = jwtService.generateToken(request.getEmail());
+
+        return ResponseEntity.ok(new JwtResponse(token));
     }
 
     @ExceptionHandler(BadCredentialsException.class)
