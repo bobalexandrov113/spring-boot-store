@@ -39,7 +39,7 @@ public class SecurityConfiguration {
         http.csrf(AbstractHttpConfigurer::disable);
         http.authorizeHttpRequests(a->a
                 .requestMatchers("/carts/**","/login","/","/error").permitAll()
-                .requestMatchers(HttpMethod.POST, "/users","/auth/login").permitAll()
+                .requestMatchers(HttpMethod.POST, "/users","/auth/login","/auth/validate").permitAll()
                 .anyRequest().authenticated());
 
         return http.build();
