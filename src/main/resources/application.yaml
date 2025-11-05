@@ -11,6 +11,8 @@ spring:
     show-sql: true
   jwt:
     secret: ${JWT_SECRET}
+    accessTokenExpiration: 300
+    refreshTokenExpiration: 604800
 datasets:
   ccdp_dataset_name: product_common_claim_dev_st9
   ccdp_dataset_internal: product_common_claim_internaldev_st9

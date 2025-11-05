@@ -1,5 +1,6 @@
 package com.cba.store.services;
 
+import com.cba.store.config.JwtConfig;
 import com.cba.store.dtos.AuthRequestDto;
 import com.cba.store.entities.User;
 import com.cba.store.repositories.UserRepository;
@@ -7,30 +8,40 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
-
+@AllArgsConstructor
 @Service
 public class JwtService {
     UserRepository userRepository;
+    private final JwtConfig jwtConfig;
 
-    @Value("${spring.jwt.secret}")
-    private String secret;
 
-    public String generateToken(User user)
+
+
+    public String generateAccessToken(User user)
     {
-        final long tokenExpiration = 8640000;
 
+        return getString(user, jwtConfig.getAccessTokenExpiration());
+    }
 
+    public String generateRefreshToken(User user)
+    {
+
+        return getString(user, jwtConfig.getRefreshTokenExpiration());
+    }
+
+    private String getString(User user, long tokenExpiration) {
         return Jwts.builder()
                 .subject(user.getId().toString())
-                .claim("email",user.getEmail())
-                .claim("name",user.getName())
+                .claim("email", user.getEmail())
+                .claim("name", user.getName())
                 .issuedAt(new Date())
                 .expiration(new Date(System.currentTimeMillis() + tokenExpiration))
-                .signWith(Keys.hmacShaKeyFor(secret.getBytes()), SignatureAlgorithm.HS256)
+                .signWith(Keys.hmacShaKeyFor(jwtConfig.getSecret().getBytes()), SignatureAlgorithm.HS256)
                 .compact();
     }
 
@@ -48,7 +59,7 @@ public class JwtService {
 
     private Claims getClaims(String token) {
         return Jwts.parser()
-                .verifyWith(Keys.hmacShaKeyFor(secret.getBytes()))
+                .verifyWith(Keys.hmacShaKeyFor(jwtConfig.getSecret().getBytes()))
                 .build()
                 .parseSignedClaims(token)
                 .getPayload();
