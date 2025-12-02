@@ -2,6 +2,7 @@ package com.cba.store.services;
 
 import com.cba.store.config.JwtConfig;
 import com.cba.store.dtos.AuthRequestDto;
+import com.cba.store.entities.Role;
 import com.cba.store.entities.User;
 import com.cba.store.repositories.UserRepository;
 import io.jsonwebtoken.Claims;
@@ -39,9 +40,10 @@ public class JwtService {
                 .subject(user.getId().toString())
                 .claim("email", user.getEmail())
                 .claim("name", user.getName())
+                .claim("role", user.getRole())
                 .issuedAt(new Date())
-                .expiration(new Date(System.currentTimeMillis() + tokenExpiration))
-                .signWith(Keys.hmacShaKeyFor(jwtConfig.getSecret().getBytes()), SignatureAlgorithm.HS256)
+                .expiration(new Date(System.currentTimeMillis() + tokenExpiration*1000))
+                .signWith(jwtConfig.getSecretKey(), SignatureAlgorithm.HS256)
                 .compact();
     }
 
@@ -59,7 +61,7 @@ public class JwtService {
 
     private Claims getClaims(String token) {
         return Jwts.parser()
-                .verifyWith(Keys.hmacShaKeyFor(jwtConfig.getSecret().getBytes()))
+                .verifyWith(jwtConfig.getSecretKey())
                 .build()
                 .parseSignedClaims(token)
                 .getPayload();
@@ -78,5 +80,10 @@ public class JwtService {
     public Long getUserIdFromToken(String token)
     {
         return Long.valueOf(getClaims(token).getSubject());
+    }
+
+    public Role getRoleFromToken(String token)
+    {
+        return Role.valueOf(getClaims(token).get("role").toString());
     }
 }

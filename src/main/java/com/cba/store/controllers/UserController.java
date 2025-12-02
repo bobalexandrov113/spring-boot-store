@@ -4,6 +4,7 @@ import com.cba.store.dtos.ChangePasswordRequest;
 import com.cba.store.dtos.RegisterUserRequest;
 import com.cba.store.dtos.UpdateUserRequest;
 import com.cba.store.dtos.UserDto;
+import com.cba.store.entities.Role;
 import com.cba.store.entities.User;
 import com.cba.store.mappers.UserMapper;
 import com.cba.store.repositories.UserRepository;
@@ -62,6 +63,7 @@ public class UserController {
         }
         var user = userMapper.toEntity(request);
         user.setPassword(passwordEncoder.encode(user.getPassword()));
+        user.setRole(Role.USER);
         userRepository.save(user);
         UserDto userDto = userMapper.userToUserDto(user);
         var uri = URI.create("/users/" + user.getId());
