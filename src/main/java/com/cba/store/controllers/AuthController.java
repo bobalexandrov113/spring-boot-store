@@ -30,6 +30,7 @@ public class AuthController {
     private final UserMapper userMapper;
     private final JwtConfig jwtConfig;
 
+
     @PostMapping("/login")
     public ResponseEntity<JwtResponse> login(
             @RequestBody AuthRequestDto request,
@@ -43,14 +44,14 @@ public class AuthController {
        var accessToken = jwtService.generateAccessToken(user);
        var refreshToken = jwtService.generateRefreshToken(user);
 
-       var cookie = new Cookie("refreshToken", refreshToken);
+       var cookie = new Cookie("refreshToken", refreshToken.toString());
        cookie.setPath("/auth/refresh");
        cookie.setHttpOnly(true);
        cookie.setMaxAge(jwtConfig.getRefreshTokenExpiration());
        cookie.setSecure(true);
        response.addCookie(cookie);
 
-        return ResponseEntity.ok(new JwtResponse(accessToken));
+        return ResponseEntity.ok(new JwtResponse(accessToken.toString()));
     }
 
     @PostMapping("/validate")
@@ -71,12 +72,12 @@ public class AuthController {
         {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
-
-        var userId = jwtService.getUserIdFromToken(refreshToken);
+        var jwt = jwtService.parse(refreshToken);
+        var userId = jwt.getUserId();
         var user = userRepository.findById(userId);
         var accessToken = jwtService.generateAccessToken(user.get());
 
-        return ResponseEntity.ok(new JwtResponse(accessToken));
+        return ResponseEntity.ok(new JwtResponse(accessToken.toString()));
     }
 
 

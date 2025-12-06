@@ -1,5 +1,6 @@
 package com.cba.store.filters;
 
+import com.cba.store.services.Jwt;
 import com.cba.store.services.JwtService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -23,6 +24,7 @@ import java.util.List;
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
    private final JwtService jwtService;
 
+
     @Override
     protected void doFilterInternal(HttpServletRequest request,
                                     HttpServletResponse response,
@@ -35,16 +37,16 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             return;
         }
         var token =  authHeader.replace("Bearer ", "") ;
-        if (!jwtService.validateToken(token)) {
+        var jwt = jwtService.parse(token);
+
+        if (jwt == null || jwt.isExpired()) {
             filterChain.doFilter(request, response);
             return;
         }
-        var role = jwtService.getRoleFromToken(token);
-        var userId = jwtService.getUserIdFromToken(token);
         var authentication = new UsernamePasswordAuthenticationToken(
-                userId,
+                jwt.getUserId(),
                 null,
-                List.of(new SimpleGrantedAuthority("ROLE_"+role))
+                List.of(new SimpleGrantedAuthority("ROLE_"+ jwt.getRole()))
         );
 
         authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request)

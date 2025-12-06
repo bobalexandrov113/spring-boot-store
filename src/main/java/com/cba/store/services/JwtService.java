@@ -13,6 +13,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import javax.crypto.SecretKey;
 import java.util.Date;
 @AllArgsConstructor
 @Service
@@ -23,28 +24,30 @@ public class JwtService {
 
 
 
-    public String generateAccessToken(User user)
+    public Jwt generateAccessToken(User user)
     {
-
-        return getString(user, jwtConfig.getAccessTokenExpiration());
+                return generateToken(user, jwtConfig.getRefreshTokenExpiration());
     }
 
-    public String generateRefreshToken(User user)
+    public Jwt generateRefreshToken(User user)
     {
-
-        return getString(user, jwtConfig.getRefreshTokenExpiration());
+        return generateToken(user, jwtConfig.getAccessTokenExpiration());
     }
 
-    private String getString(User user, long tokenExpiration) {
-        return Jwts.builder()
+    private Jwt generateToken(User user, long tokenExpiration)
+    {
+                var claims = Jwts.claims()
+                .add("email", user.getEmail())
+                .add("name", user.getName())
+                .add("role", user.getRole())
                 .subject(user.getId().toString())
-                .claim("email", user.getEmail())
-                .claim("name", user.getName())
-                .claim("role", user.getRole())
                 .issuedAt(new Date())
                 .expiration(new Date(System.currentTimeMillis() + tokenExpiration*1000))
-                .signWith(jwtConfig.getSecretKey(), SignatureAlgorithm.HS256)
-                .compact();
+                .build();
+
+                SecretKey secretKey = jwtConfig.getSecretKey();
+
+                return new Jwt(claims,secretKey);
     }
 
     public boolean validateToken(String token)
@@ -59,6 +62,18 @@ public class JwtService {
         }
     }
 
+    public Jwt parse(String token)
+    {
+       try
+       {
+            return new Jwt(getClaims(token),jwtConfig.getSecretKey());
+        }
+        catch (Exception e)
+        {
+            return null;
+        }
+    }
+
     private Claims getClaims(String token) {
         return Jwts.parser()
                 .verifyWith(jwtConfig.getSecretKey())
@@ -67,23 +82,23 @@ public class JwtService {
                 .getPayload();
     }
 
-    public String getUsernameFromToken(String token)
-    {
-        return (String) getClaims(token).get("name");
-    }
-    public String getEmailFromToken(String token)
-    {
-        var claims = getClaims(token);
-        return (String) claims.get("email");
-    }
-
-    public Long getUserIdFromToken(String token)
-    {
-        return Long.valueOf(getClaims(token).getSubject());
-    }
-
-    public Role getRoleFromToken(String token)
-    {
-        return Role.valueOf(getClaims(token).get("role").toString());
-    }
+//    public String getUsernameFromToken(String token)
+//    {
+//        return (String) getClaims(token).get("name");
+//    }
+//    public String getEmailFromToken(String token)
+//    {
+//        var claims = getClaims(token);
+//        return (String) claims.get("email");
+//    }
+//
+//    public Long getUserIdFromToken(String token)
+//    {
+//        return Long.valueOf(getClaims(token).getSubject());
+//    }
+//
+//    public Role getRoleFromToken(String token)
+//    {
+//        return Role.valueOf(getClaims(token).get("role").toString());
+//    }
 }
