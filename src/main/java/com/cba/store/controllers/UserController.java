@@ -34,7 +34,7 @@ public class UserController {
 
     @GetMapping
     public ResponseEntity<List<UserDto>> getAllUsers(
-            @RequestHeader(name = "x-auth-token") String authToken,
+            @RequestHeader(name = "Authorization") String authToken,
             @RequestParam(required = false, defaultValue = "", name = "sort") String sort
     )
     {

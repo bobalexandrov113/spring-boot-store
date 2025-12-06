@@ -57,7 +57,8 @@ public class SecurityConfiguration {
         http.authorizeHttpRequests(a->a
                 .requestMatchers("/carts/**","/login","/","/error").permitAll()
                 .requestMatchers("/admin/**").hasRole(Role.ADMIN.name())
-                .requestMatchers(HttpMethod.POST, "/users","/auth/login","/auth/refresh").permitAll()
+                .requestMatchers("/users/**").hasRole(Role.ADMIN.name())
+                .requestMatchers(HttpMethod.POST, "/users/**","/auth/login","/auth/refresh").permitAll()
                 .anyRequest().authenticated());
 
         return http.build();
