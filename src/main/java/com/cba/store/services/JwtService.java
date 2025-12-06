@@ -50,17 +50,6 @@ public class JwtService {
                 return new Jwt(claims,secretKey);
     }
 
-    public boolean validateToken(String token)
-    {
-        try {
-            var claims = getClaims(token);
-              return claims.getExpiration().after(new Date());
-        }
-        catch (Exception e)
-        {
-            return false;
-        }
-    }
 
     public Jwt parse(String token)
     {
@@ -81,24 +70,4 @@ public class JwtService {
                 .parseSignedClaims(token)
                 .getPayload();
     }
-
-//    public String getUsernameFromToken(String token)
-//    {
-//        return (String) getClaims(token).get("name");
-//    }
-//    public String getEmailFromToken(String token)
-//    {
-//        var claims = getClaims(token);
-//        return (String) claims.get("email");
-//    }
-//
-//    public Long getUserIdFromToken(String token)
-//    {
-//        return Long.valueOf(getClaims(token).getSubject());
-//    }
-//
-//    public Role getRoleFromToken(String token)
-//    {
-//        return Role.valueOf(getClaims(token).get("role").toString());
-//    }
 }
