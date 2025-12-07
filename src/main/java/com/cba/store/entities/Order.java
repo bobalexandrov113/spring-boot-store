@@ -24,9 +24,10 @@ public class Order {
     private Long customerId;
 
     @Column(name = "status", nullable = false)
-    private String status;
+    @Enumerated(EnumType.STRING)
+    private OrderStatus status;
 
-    @Column(name = "created_at", nullable = false)
+    @Column(name = "created_at", insertable = false, updatable = false)
     private LocalDateTime createdAt;
 
     @Column(name = "total_price", nullable = false)

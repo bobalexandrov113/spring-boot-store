@@ -4,6 +4,7 @@ import com.cba.store.dtos.AddItemToCartRequest;
 import com.cba.store.dtos.CartDto;
 import com.cba.store.dtos.CartItemDto;
 import com.cba.store.dtos.UpdateCartItemRequest;
+import com.cba.store.entities.Cart;
 import com.cba.store.exceptions.CartItemNotFoundException;
 import com.cba.store.exceptions.CartNotFoundException;
 import com.cba.store.exceptions.ProductNotFoundException;
@@ -14,6 +15,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
+
+import java.util.List;
 import java.util.Map;
 
 import java.util.UUID;
@@ -25,6 +28,14 @@ import java.util.UUID;
 public class CartController {
 
     private final CartService cartService;
+
+    @GetMapping
+    public ResponseEntity<List<CartDto>> getAllCarts()
+    {
+        List<CartDto> carts = cartService.getAllCarts();
+        return new ResponseEntity<>(carts, HttpStatus.OK);
+    }
+
 
 
     @PostMapping

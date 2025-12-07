@@ -15,6 +15,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import com.cba.store.repositories.CartRepository;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -97,5 +99,15 @@ public class CartService {
         }
         cart.clear();
         cartRepository.save(cart);
+    }
+
+    public List<CartDto> getAllCarts()
+    {
+         var carts =  cartRepository.findAll();
+         List<CartDto> cartList = new ArrayList<>();
+         for (var cart : carts) {
+            cartList.add(cartMapper.toDto(cart));
+         }
+         return cartList;
     }
 }
