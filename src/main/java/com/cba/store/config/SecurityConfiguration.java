@@ -55,7 +55,7 @@ public class SecurityConfiguration {
                 sessionCreationPolicy(SessionCreationPolicy.STATELESS));
         http.csrf(AbstractHttpConfigurer::disable);
         http.authorizeHttpRequests(a->a
-                .requestMatchers("/carts/**","/login","/","/error").permitAll()
+                .requestMatchers("/carts/**","/login","/","/error/**").permitAll()
                 .requestMatchers("/admin/**").hasRole(Role.ADMIN.name())
                 .requestMatchers("/users/**").hasRole(Role.ADMIN.name())
                 .requestMatchers(HttpMethod.POST, "/users/**","/auth/login","/auth/refresh").permitAll()

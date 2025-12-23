@@ -40,6 +40,10 @@ public class Cart {
                     .orElse(null);
     }
 
+    public Set<CartItem> getItems() {
+       return items;
+    }
+
     public CartItem addItem(Product product)
     {
         var cartItem = getItem(product.getId());
@@ -69,4 +73,5 @@ public class Cart {
         {
             items.clear();
         }
+
 }

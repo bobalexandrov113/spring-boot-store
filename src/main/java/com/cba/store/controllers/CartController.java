@@ -59,9 +59,9 @@ public class CartController {
 
 
     @GetMapping("/{cartId}")
-    public ResponseEntity<CartDto> getCart(@PathVariable UUID cartId) {
-        var cartDto = cartService.getCart(cartId);
-        return ResponseEntity.ok(cartDto);
+    public ResponseEntity<Cart> getCart(@PathVariable UUID cartId) {
+        var cart = cartService.getCart(cartId);
+        return ResponseEntity.ok(cart);
     }
 
     @PutMapping("/{cartId}/items/{productId}")

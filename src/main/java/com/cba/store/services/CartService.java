@@ -52,13 +52,13 @@ public class CartService {
         return cartItemDto;
     }
 
-    public CartDto getCart( UUID cartId )
+    public Cart getCart( UUID cartId )
     {
-        var cart = cartRepository.findById(cartId).orElse(null);
+        var cart = cartRepository.getCartWithItems(cartId);
         if (cart == null) {
             throw new CartNotFoundException();
         }
-        return cartMapper.toDto(cart);
+        return cart;
     }
 
     public CartItemDto updateCartItem( UUID cartId, Long productId,Integer quantity )

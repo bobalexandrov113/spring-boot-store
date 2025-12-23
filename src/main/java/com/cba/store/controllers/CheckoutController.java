@@ -4,7 +4,9 @@ import com.cba.store.dtos.CartDto;
 import com.cba.store.dtos.CheckoutRequest;
 import com.cba.store.dtos.CheckoutResponse;
 import com.cba.store.dtos.ErrorDto;
+import com.cba.store.entities.*;
 import com.cba.store.repositories.CartRepository;
+import com.cba.store.services.AuthService;
 import com.cba.store.services.CartService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
@@ -16,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.math.BigDecimal;
 import java.util.Map;
+import java.util.Set;
 
 @RestController
 @RequestMapping("/checkout")
@@ -23,12 +26,13 @@ import java.util.Map;
 @AllArgsConstructor
 public class CheckoutController {
     private CartService cartService;
+    private AuthService authService;
 
     @PostMapping
     public ResponseEntity<?> checkout(
-         @Valid @RequestBody CheckoutRequest request)
+    @Valid @RequestBody CheckoutRequest request)
     {
-        CartDto cart ;
+        Cart cart ;
       try {
            cart = cartService.getCart(request.getCartId());
       }
@@ -42,6 +46,20 @@ public class CheckoutController {
                    new ErrorDto("Cart is empty")
            );
        }
+
+       var order = new Order();
+       order.setTotalPrice(cart.getTotalPrice());
+       order.setStatus(OrderStatus.PENDING);
+       order.setCustomer(authService.getCurrentUser());
+
+         cart.getItems().forEach(item -> {
+         var orderItem = new OrderItem();
+         orderItem.setQuantity(item.getQuantity());
+         orderItem.setTotalPrice(item.getTotalPrice());
+         orderItem.setProduct((Product)item.getProduct());
+
+       });
+
        return ResponseEntity.ok(cart);
 
 
