@@ -5,7 +5,9 @@ import com.cba.store.dtos.CheckoutRequest;
 import com.cba.store.dtos.CheckoutResponse;
 import com.cba.store.dtos.ErrorDto;
 import com.cba.store.entities.*;
+import com.cba.store.mappers.ProductMapper;
 import com.cba.store.repositories.CartRepository;
+import com.cba.store.repositories.OrderRepository;
 import com.cba.store.services.AuthService;
 import com.cba.store.services.CartService;
 import jakarta.validation.Valid;
@@ -27,12 +29,15 @@ import java.util.Set;
 public class CheckoutController {
     private CartService cartService;
     private AuthService authService;
+    private ProductMapper productMapper;
+    private CartRepository cartRepository;
+    private OrderRepository orderRepository;
 
     @PostMapping
     public ResponseEntity<?> checkout(
     @Valid @RequestBody CheckoutRequest request)
     {
-        Cart cart ;
+        CartDto cart ;
       try {
            cart = cartService.getCart(request.getCartId());
       }
@@ -47,20 +52,22 @@ public class CheckoutController {
            );
        }
 
-       var order = new Order();
-       order.setTotalPrice(cart.getTotalPrice());
-       order.setStatus(OrderStatus.PENDING);
-       order.setCustomer(authService.getCurrentUser());
+           var order = new Order();
+           order.setTotalPrice(cart.getTotalPrice());
+           order.setStatus(OrderStatus.PENDING);
+           order.setCustomer(authService.getCurrentUser());
 
-         cart.getItems().forEach(item -> {
-         var orderItem = new OrderItem();
-         orderItem.setQuantity(item.getQuantity());
-         orderItem.setTotalPrice(item.getTotalPrice());
-         orderItem.setProduct((Product)item.getProduct());
-
-       });
-
-       return ResponseEntity.ok(cart);
+           cart.getItems().forEach(item -> {
+             var orderItem = new OrderItem();
+             orderItem.setOrder(order);
+             orderItem.setProduct(productMapper.toEntity(item.getProduct()));
+             orderItem.setQuantity(item.getQuantity());
+             orderItem.setTotalPrice(item.getTotalPrice());
+             orderItem.setUnitPrice(item.getProduct().getPrice());
+             order.getItems().add(orderItem);
+           });
+           orderRepository.save(order);
+           return ResponseEntity.ok(new CheckoutResponse(order.getId()));
 
 
     }
