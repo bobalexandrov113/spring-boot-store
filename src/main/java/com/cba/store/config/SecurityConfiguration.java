@@ -55,7 +55,7 @@ public class SecurityConfiguration {
                 sessionCreationPolicy(SessionCreationPolicy.STATELESS));
         http.csrf(AbstractHttpConfigurer::disable);
         http.authorizeHttpRequests(a->a
-                .requestMatchers("/carts/**","/login","/","/error/**","/swagger-ui.html","/swagger-ui/**").permitAll()
+                .requestMatchers("/login","/","/error/**").permitAll()
                 .requestMatchers("/swagger-ui.html","/swagger-ui/**","/v3/api-docs/**").permitAll()
                 .requestMatchers("/admin/**").hasRole(Role.ADMIN.name())
                 .requestMatchers("/users/**").hasRole(Role.ADMIN.name())
