@@ -60,9 +60,12 @@ public class CartController {
     }
 
     @PutMapping("/{cartId}/items/{productId}")
+    @Operation(summary="updates the quantity of products in a cart item ")
     public ResponseEntity<?>updateItem
             (
+                   @Parameter(description = "The id of the cart")
                    @PathVariable("cartId") UUID cartId,
+                   @Parameter(description = "The Product id")
                    @PathVariable("productId") Long productId,
                   @Valid @RequestBody UpdateCartItemRequest request
             )
