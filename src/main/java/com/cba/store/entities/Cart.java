@@ -34,7 +34,7 @@ public class Cart {
 
     public CartItem getItem(Long productId)
     {
-            return items.stream()
+            return  items.stream()
                     .filter(item -> item.getProduct().getId().equals(productId))
                     .findFirst()
                     .orElse(null);
@@ -69,4 +69,7 @@ public class Cart {
         {
             items.clear();
         }
+
+
+
 }

@@ -9,6 +9,7 @@ import com.cba.store.exceptions.CartNotFoundException;
 import com.cba.store.exceptions.ProductNotFoundException;
 import com.cba.store.services.CartService;
 import io.swagger.v3.oas.annotations.Parameter;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -60,7 +61,7 @@ public class CartController {
             (
                    @PathVariable("cartId") UUID cartId,
                    @PathVariable("productId") Long productId,
-                   @RequestBody UpdateCartItemRequest request
+                  @Valid @RequestBody UpdateCartItemRequest request
             )
     {
         var quantity = request.getQuantity();
@@ -92,7 +93,8 @@ public class CartController {
     @ExceptionHandler(CartNotFoundException.class)
     public ResponseEntity<Map<String, String>> handleCartNotFound()
         {
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("error", "Cart not found"));
+         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("error", "Cart not found"));
+            //return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ErrorDto("Cart not found"));
         }
 
     @ExceptionHandler(CartItemNotFoundException.class)

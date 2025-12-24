@@ -46,8 +46,7 @@ public class CartService {
         var cartItem=cart.addItem(product);
 
         cartRepository.save(cart);
-        var cartItemDto = cartItemMapper.toDto(cartItem);
-        return cartItemDto;
+        return cartItemMapper.toDto(cartItem);
     }
 
     public CartDto getCart( UUID cartId )
