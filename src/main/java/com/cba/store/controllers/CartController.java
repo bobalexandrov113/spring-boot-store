@@ -92,7 +92,7 @@ public class CartController {
            @PathVariable UUID cartId
    )
     {
-        cartService.deleteCart(cartId);
+        cartService.clearCart(cartId);
         return ResponseEntity.noContent().build();
     }
 

@@ -67,6 +67,7 @@ public class CheckoutController {
              order.getItems().add(orderItem);
            });
            orderRepository.save(order);
+           cartService.clearCart(cart.getId());
            return ResponseEntity.ok(new CheckoutResponse(order.getId()));
 
 

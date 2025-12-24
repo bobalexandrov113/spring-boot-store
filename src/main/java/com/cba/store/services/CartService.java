@@ -88,7 +88,7 @@ public class CartService {
         cartRepository.save(cart);
     }
 
-    public void deleteCart( UUID cartId )
+    public void clearCart( UUID cartId )
     {
         var cart = cartRepository.getCartWithItems(cartId).orElse(null);
         if (cart == null) {
@@ -97,4 +97,5 @@ public class CartService {
         cart.clear();
         cartRepository.save(cart);
     }
+
 }
