@@ -34,14 +34,10 @@ public class Cart {
 
     public CartItem getItem(Long productId)
     {
-            return items.stream()
+            return  items.stream()
                     .filter(item -> item.getProduct().getId().equals(productId))
                     .findFirst()
                     .orElse(null);
-    }
-
-    public Set<CartItem> getItems() {
-       return items;
     }
 
     public CartItem addItem(Product product)
@@ -54,7 +50,7 @@ public class Cart {
             cartItem.setProduct(product);
             cartItem.setQuantity(1);
             cartItem.setCart(this);
-            getItems().add(cartItem);
+            items.add(cartItem);
         }
         return cartItem;
     }
@@ -73,5 +69,7 @@ public class Cart {
         {
             items.clear();
         }
+
+
 
 }

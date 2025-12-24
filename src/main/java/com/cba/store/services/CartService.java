@@ -15,8 +15,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import com.cba.store.repositories.CartRepository;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -37,7 +35,7 @@ public class CartService {
     }
     public CartItemDto addToCart(  UUID cartId, Long productId)
     {
-        var cart = cartRepository.findById(cartId).orElse(null);
+        var cart = cartRepository.getCartWithItems(cartId).orElse(null);
         if (cart == null) {
             throw new CartNotFoundException();
         }
@@ -48,22 +46,21 @@ public class CartService {
         var cartItem=cart.addItem(product);
 
         cartRepository.save(cart);
-        var cartItemDto = cartItemMapper.toDto(cartItem);
-        return cartItemDto;
+        return cartItemMapper.toDto(cartItem);
     }
 
-    public Cart getCart( UUID cartId )
+    public CartDto getCart( UUID cartId )
     {
-        var cart = cartRepository.getCartWithItems(cartId);
+        var cart = cartRepository.getCartWithItems(cartId).orElse(null);
         if (cart == null) {
             throw new CartNotFoundException();
         }
-        return cart;
+        return cartMapper.toDto(cart);
     }
 
     public CartItemDto updateCartItem( UUID cartId, Long productId,Integer quantity )
     {
-        var cart = cartRepository.findById(cartId).orElse(null);
+        var cart = cartRepository.getCartWithItems(cartId).orElse(null);
 
         if (cart == null) {
             throw new CartNotFoundException();
@@ -83,7 +80,7 @@ public class CartService {
 
     public void deleteCartItem( UUID cartId, Long productId )
     {
-        var cart = cartRepository.findById(cartId).orElse(null);
+        var cart = cartRepository.getCartWithItems(cartId).orElse(null);
         if (cart == null) {
             throw new CartNotFoundException();
         }
@@ -93,21 +90,11 @@ public class CartService {
 
     public void deleteCart( UUID cartId )
     {
-        var cart = cartRepository.findById(cartId).orElse(null);
+        var cart = cartRepository.getCartWithItems(cartId).orElse(null);
         if (cart == null) {
             throw new CartNotFoundException();
         }
         cart.clear();
         cartRepository.save(cart);
-    }
-
-    public List<CartDto> getAllCarts()
-    {
-         var carts =  cartRepository.findAll();
-         List<CartDto> cartList = new ArrayList<>();
-         for (var cart : carts) {
-            cartList.add(cartMapper.toDto(cart));
-         }
-         return cartList;
     }
 }
