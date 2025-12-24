@@ -35,7 +35,7 @@ public class CartService {
     }
     public CartItemDto addToCart(  UUID cartId, Long productId)
     {
-        var cart = cartRepository.findById(cartId).orElse(null);
+        var cart = cartRepository.getCartWithItems(cartId).orElse(null);
         if (cart == null) {
             throw new CartNotFoundException();
         }
@@ -52,7 +52,7 @@ public class CartService {
 
     public CartDto getCart( UUID cartId )
     {
-        var cart = cartRepository.findById(cartId).orElse(null);
+        var cart = cartRepository.getCartWithItems(cartId).orElse(null);
         if (cart == null) {
             throw new CartNotFoundException();
         }
@@ -61,7 +61,7 @@ public class CartService {
 
     public CartItemDto updateCartItem( UUID cartId, Long productId,Integer quantity )
     {
-        var cart = cartRepository.findById(cartId).orElse(null);
+        var cart = cartRepository.getCartWithItems(cartId).orElse(null);
 
         if (cart == null) {
             throw new CartNotFoundException();
@@ -81,7 +81,7 @@ public class CartService {
 
     public void deleteCartItem( UUID cartId, Long productId )
     {
-        var cart = cartRepository.findById(cartId).orElse(null);
+        var cart = cartRepository.getCartWithItems(cartId).orElse(null);
         if (cart == null) {
             throw new CartNotFoundException();
         }
@@ -91,7 +91,7 @@ public class CartService {
 
     public void deleteCart( UUID cartId )
     {
-        var cart = cartRepository.findById(cartId).orElse(null);
+        var cart = cartRepository.getCartWithItems(cartId).orElse(null);
         if (cart == null) {
             throw new CartNotFoundException();
         }
