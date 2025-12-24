@@ -50,7 +50,7 @@ public class Cart {
             cartItem.setProduct(product);
             cartItem.setQuantity(1);
             cartItem.setCart(this);
-            getItems().add(cartItem);
+            items.add(cartItem);
         }
         return cartItem;
     }

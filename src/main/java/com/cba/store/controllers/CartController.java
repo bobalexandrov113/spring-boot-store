@@ -1,9 +1,6 @@
 package com.cba.store.controllers;
 
-import com.cba.store.dtos.AddItemToCartRequest;
-import com.cba.store.dtos.CartDto;
-import com.cba.store.dtos.CartItemDto;
-import com.cba.store.dtos.UpdateCartItemRequest;
+import com.cba.store.dtos.*;
 import com.cba.store.exceptions.CartItemNotFoundException;
 import com.cba.store.exceptions.CartNotFoundException;
 import com.cba.store.exceptions.ProductNotFoundException;
@@ -41,7 +38,7 @@ public class CartController {
     public ResponseEntity<CartItemDto> addToCart
             (@Parameter(description = "The id of the cart")
                     @PathVariable UUID cartId,
-             @RequestBody AddItemToCartRequest request)
+             @Valid @RequestBody AddItemToCartRequest request)
     {
         var productId = request.getProductId();
         var cartItemDto = cartService.addToCart(cartId,productId);
@@ -91,21 +88,22 @@ public class CartController {
     }
 
     @ExceptionHandler(CartNotFoundException.class)
-    public ResponseEntity<Map<String, String>> handleCartNotFound()
+    public ResponseEntity<?> handleCartNotFound()
         {
-         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("error", "Cart not found"));
-            //return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ErrorDto("Cart not found"));
+         //return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("error", "Cart not found"));
+             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErrorDto("Cart not found"));
         }
 
     @ExceptionHandler(CartItemNotFoundException.class)
-    public ResponseEntity<Map<String, String>> handleCartItemNotFound()
+    public ResponseEntity<?> handleCartItemNotFound()
     {
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("error", "Cart item not found"));
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErrorDto("Cart Item not found"));
     }
 
     @ExceptionHandler(ProductNotFoundException.class)
-    public ResponseEntity<Map<String, String>> handleProductNotFound()
+    public ResponseEntity<?> handleProductNotFound()
     {
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("error", "Product not found"));
+
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErrorDto("Product not found"));
     }
 }

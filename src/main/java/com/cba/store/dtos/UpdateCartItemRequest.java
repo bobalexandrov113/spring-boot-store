@@ -10,5 +10,5 @@ public class UpdateCartItemRequest {
     @NotNull(message = "Quantity must be provided")
     @Min(value = 1, message = "Quantity must be greater than zero")
     @Max(value = 100, message = "Quantity can not  be greater than 100" )
-    private int quantity;
+    private Integer quantity;
 }
