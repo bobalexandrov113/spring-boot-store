@@ -5,7 +5,9 @@ import com.cba.store.exceptions.CartItemNotFoundException;
 import com.cba.store.exceptions.CartNotFoundException;
 import com.cba.store.exceptions.ProductNotFoundException;
 import com.cba.store.services.CartService;
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -19,7 +21,7 @@ import java.util.UUID;
 @AllArgsConstructor
 @RestController
 @RequestMapping("/carts")
-
+@Tag(name="Carts")
 public class CartController {
 
     private final CartService cartService;
@@ -35,6 +37,7 @@ public class CartController {
 
 
     @PostMapping("/{cartId}/items")
+    @Operation(summary="Adds a product to the cart")
     public ResponseEntity<CartItemDto> addToCart
             (@Parameter(description = "The id of the cart")
                     @PathVariable UUID cartId,
@@ -48,7 +51,10 @@ public class CartController {
 
 
     @GetMapping("/{cartId}")
-    public ResponseEntity<CartDto> getCart(@PathVariable UUID cartId) {
+    @Operation(summary="Gets the cart")
+    public ResponseEntity<CartDto> getCart(
+            @Parameter(description = "The id of the cart")
+            @PathVariable UUID cartId) {
         var cartDto = cartService.getCart(cartId);
         return ResponseEntity.ok(cartDto);
     }
