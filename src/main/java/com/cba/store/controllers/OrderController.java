@@ -4,6 +4,7 @@ import com.cba.store.dtos.OrderDto;
 import com.cba.store.mappers.OrderMapper;
 import com.cba.store.repositories.OrderRepository;
 import com.cba.store.services.AuthService;
+import com.cba.store.services.OrderService;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -15,19 +16,13 @@ import java.util.List;
 @AllArgsConstructor
 @RequestMapping("/orders")
 public class OrderController {
-    private final AuthService authService;
-    private final OrderRepository orderRepository;
-    private final OrderMapper orderMapper;
+
+    private final OrderService orderService;
 
     @GetMapping
     public List<OrderDto> getAllOrders()
     {
-        var user = authService.getCurrentUser();
-        var orders = orderRepository.findAllByCustomer(user);
-        return orders
-                .stream()
-                .map(orderMapper::toDto)
-                .toList();
+       return orderService.getAllOrders();
 
     }
 
