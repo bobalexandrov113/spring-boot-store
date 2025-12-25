@@ -32,7 +32,15 @@ public class OrderItem {
 
     @Column(name = "total_price")
     private BigDecimal totalPrice;
- }
+
+    public OrderItem(Order order, Product product, Integer quantity, BigDecimal totalPrice) {
+        this.order = order;
+        this.product = product;
+        this.quantity = quantity;
+        this.totalPrice = totalPrice;
+        this.unitPrice = product.getPrice();
+    }
+}
 
 
 
