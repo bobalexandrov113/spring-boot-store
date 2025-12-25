@@ -37,7 +37,7 @@ public class CheckoutController {
     public ResponseEntity<?> checkout(
     @Valid @RequestBody CheckoutRequest request)
     {
-        CartDto cart ;
+        Cart cart ;
       try {
            cart = cartService.getCart(request.getCartId());
       }
@@ -60,7 +60,7 @@ public class CheckoutController {
            cart.getItems().forEach(item -> {
              var orderItem = new OrderItem();
              orderItem.setOrder(order);
-             orderItem.setProduct(productMapper.toEntity(item.getProduct()));
+             orderItem.setProduct(item.getProduct());
              orderItem.setQuantity(item.getQuantity());
              orderItem.setTotalPrice(item.getTotalPrice());
              orderItem.setUnitPrice(item.getProduct().getPrice());

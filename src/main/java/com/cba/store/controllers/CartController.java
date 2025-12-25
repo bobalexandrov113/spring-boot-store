@@ -4,6 +4,8 @@ import com.cba.store.dtos.*;
 import com.cba.store.exceptions.CartItemNotFoundException;
 import com.cba.store.exceptions.CartNotFoundException;
 import com.cba.store.exceptions.ProductNotFoundException;
+import com.cba.store.mappers.CartItemMapper;
+import com.cba.store.mappers.CartMapper;
 import com.cba.store.services.CartService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -25,11 +27,13 @@ import java.util.UUID;
 public class CartController {
 
     private final CartService cartService;
+    private final CartMapper cartMapper;
+    private final CartItemMapper cartItemMapper;
 
 
     @PostMapping
     public ResponseEntity<CartDto> createCart() {
-        CartDto cartDto = cartService.createCart();
+        CartDto cartDto = cartMapper.toDto(cartService.createCart());
         var uri = UriComponentsBuilder.fromHttpUrl("/carts").build().toUri();
         return ResponseEntity.created(uri).body(cartDto);
     }
@@ -44,9 +48,9 @@ public class CartController {
              @Valid @RequestBody AddItemToCartRequest request)
     {
         var productId = request.getProductId();
-        var cartItemDto = cartService.addToCart(cartId,productId);
+        var cartItemDto = cartItemMapper.toDto(cartService.addToCart(cartId, productId));
         var uri = UriComponentsBuilder.fromHttpUrl("/carts/" + cartId).build().toUri();
-        return ResponseEntity.created(uri).body(cartItemDto);
+        return ResponseEntity.created(uri).body  (cartItemDto);
     }
 
 
@@ -55,7 +59,7 @@ public class CartController {
     public ResponseEntity<CartDto> getCart(
             @Parameter(description = "The id of the cart")
             @PathVariable UUID cartId) {
-        var cartDto = cartService.getCart(cartId);
+        var cartDto = cartMapper.toDto(cartService.getCart(cartId));
         return ResponseEntity.ok(cartDto);
     }
 
