@@ -2,18 +2,12 @@ package com.cba.store.services;
 
 import com.cba.store.dtos.CheckoutRequest;
 import com.cba.store.dtos.CheckoutResponse;
-import com.cba.store.dtos.ErrorDto;
-import com.cba.store.entities.Cart;
 import com.cba.store.entities.Order;
 import com.cba.store.exceptions.CartEmptyException;
-import com.cba.store.exceptions.CartNotFoundException;
-import com.cba.store.repositories.CartRepository;
 import com.cba.store.repositories.OrderRepository;
 import lombok.AllArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import java.math.BigDecimal;
 @AllArgsConstructor
 @Service
 public class CheckoutService {

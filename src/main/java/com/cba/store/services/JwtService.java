@@ -1,16 +1,11 @@
 package com.cba.store.services;
 
 import com.cba.store.config.JwtConfig;
-import com.cba.store.dtos.AuthRequestDto;
-import com.cba.store.entities.Role;
 import com.cba.store.entities.User;
 import com.cba.store.repositories.UserRepository;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
-import io.jsonwebtoken.security.Keys;
 import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import javax.crypto.SecretKey;

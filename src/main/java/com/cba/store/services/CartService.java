@@ -1,22 +1,16 @@
 package com.cba.store.services;
 
-import com.cba.store.dtos.CartDto;
-import com.cba.store.dtos.CartItemDto;
 import com.cba.store.entities.Cart;
 import com.cba.store.entities.CartItem;
-import com.cba.store.exceptions.CartItemNotFoundException;
 import com.cba.store.exceptions.CartNotFoundException;
 import com.cba.store.exceptions.ProductNotFoundException;
 import com.cba.store.mappers.CartItemMapper;
 import com.cba.store.mappers.CartMapper;
+import com.cba.store.repositories.CartRepository;
 import com.cba.store.repositories.ProductRepository;
 import lombok.AllArgsConstructor;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import com.cba.store.repositories.CartRepository;
 
-import java.util.Map;
 import java.util.UUID;
 
 @AllArgsConstructor

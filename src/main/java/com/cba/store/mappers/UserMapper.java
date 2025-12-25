@@ -5,9 +5,7 @@ import com.cba.store.dtos.UpdateUserRequest;
 import com.cba.store.dtos.UserDto;
 import com.cba.store.entities.User;
 import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
-import org.mapstruct.Mappings;
 
 @Mapper(componentModel = "spring")
 public interface UserMapper {
