@@ -9,13 +9,13 @@ import lombok.*;
 @Table(name = "users", schema = "store")
 @AllArgsConstructor
 @NoArgsConstructor
-@Builder
-@ToString
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
+    @EqualsAndHashCode.Include
     private Long id;
 
     @Column(name = "name", nullable = false)

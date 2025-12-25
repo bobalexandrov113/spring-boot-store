@@ -29,22 +29,22 @@ class StoreApplicationTests {
         System.out.println("***************** DONE TESTING app values ******************");
     }
 
-    @Test
-    void testUser() {
-        var user = User.builder()
-                .name("John")
-                .password("1234")
-                .id(1L)
-                .email("bob@myhost.com")
-                .build();
-
-
-
-
-        System.out.println("***************** TESTING USER ******************");
-        System.out.printf("User: %s%n", user);
-        System.out.println("********** Done testing USER ***************");
-    }
+//    @Test
+//    void testUser() {
+//        var user =
+//                .name("John")
+//                .password("1234")
+//                .id(1L)
+//                .email("bob@myhost.com")
+//                .build();
+//
+//
+//
+//
+//        System.out.println("***************** TESTING USER ******************");
+//        System.out.printf("User: %s%n", user);
+//        System.out.println("********** Done testing USER ***************");
+//    }
 
     @Test
     void testUserRepository() {
