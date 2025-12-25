@@ -37,7 +37,7 @@ public class CartService {
     {
         var cart = cartRepository.getCartWithItems(cartId).orElse(null);
         if (cart == null) {
-            throw new CartNotFoundException();
+            throw new CartNotFoundException("Cart not found");
         }
         var product = productRepository.findById(productId).orElse(null);
         if (product == null) {
@@ -52,7 +52,7 @@ public class CartService {
     {
         var cart = cartRepository.getCartWithItems(cartId).orElse(null);
         if (cart == null) {
-            throw new CartNotFoundException();
+            throw new CartNotFoundException("Cart not found");
         }
         return cart;
     }
@@ -62,7 +62,7 @@ public class CartService {
         var cart = cartRepository.getCartWithItems(cartId).orElse(null);
 
         if (cart == null) {
-            throw new CartNotFoundException();
+            throw new CartNotFoundException("Cart not found");
         }
 
         var cartItem = cart.getItem(productId);
@@ -81,7 +81,7 @@ public class CartService {
     {
         var cart = cartRepository.getCartWithItems(cartId).orElse(null);
         if (cart == null) {
-            throw new CartNotFoundException();
+            throw new CartNotFoundException("Cart not found");
         }
         cart.removeItem(productId);
         cartRepository.save(cart);
@@ -91,7 +91,7 @@ public class CartService {
     {
         var cart = cartRepository.getCartWithItems(cartId).orElse(null);
         if (cart == null) {
-            throw new CartNotFoundException();
+            throw new CartNotFoundException("Cart not found");
         }
         cart.clear();
         cartRepository.save(cart);
