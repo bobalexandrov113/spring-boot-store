@@ -10,6 +10,7 @@ import com.cba.store.repositories.CartRepository;
 import com.cba.store.repositories.OrderRepository;
 import com.cba.store.services.AuthService;
 import com.cba.store.services.CartService;
+import com.cba.store.services.CheckoutService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -27,34 +28,13 @@ import java.util.Set;
 
 @AllArgsConstructor
 public class CheckoutController {
-    private CartService cartService;
-    private AuthService authService;
-    private ProductMapper productMapper;
-    private CartRepository cartRepository;
-    private OrderRepository orderRepository;
+    private CheckoutService checkoutService;
 
     @PostMapping
     public ResponseEntity<?> checkout(
     @Valid @RequestBody CheckoutRequest request)
     {
-      Cart cart ;
-      try {
-           cart = cartService.getCart(request.getCartId());
-      }
-      catch (Exception e) {
-          //return ResponseEntity.badRequest().body(Map.of("error","Cart not found"));
-          return ResponseEntity.badRequest().body(new ErrorDto("Cart not found"));
-      }
-      if( cart.getTotalPrice().compareTo(BigDecimal.ZERO)==0)
-       {
-           return ResponseEntity.badRequest().body(
-                   new ErrorDto("Cart is empty")
-           );
-       }
-
-        var order = Order.fromCart(cart, authService.getCurrentUser());
-       orderRepository.save(order);
-       cartService.clearCart(cart.getId());
-       return ResponseEntity.ok(new CheckoutResponse(order.getId()));
+       var checkoutResponse = checkoutService.checkout(request);
+       return ResponseEntity.ok(checkoutResponse);
     }
 }
