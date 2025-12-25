@@ -3,6 +3,7 @@ package com.cba.store.services;
 import com.cba.store.dtos.CartDto;
 import com.cba.store.dtos.CartItemDto;
 import com.cba.store.entities.Cart;
+import com.cba.store.entities.CartItem;
 import com.cba.store.exceptions.CartItemNotFoundException;
 import com.cba.store.exceptions.CartNotFoundException;
 import com.cba.store.exceptions.ProductNotFoundException;
@@ -26,14 +27,13 @@ public class CartService {
     private final CartMapper cartMapper;
     private final CartItemMapper cartItemMapper;
 
-    public CartDto createCart(  )
+    public Cart createCart(  )
     {
         var cart= new Cart();
         cartRepository.save(cart);
-        var cartDto = cartMapper.toDto(cart);
-        return cartDto;
+        return cart;
     }
-    public CartItemDto addToCart(  UUID cartId, Long productId)
+    public CartItem addToCart(  UUID cartId, Long productId)
     {
         var cart = cartRepository.getCartWithItems(cartId).orElse(null);
         if (cart == null) {
@@ -44,21 +44,20 @@ public class CartService {
             throw new ProductNotFoundException();
         }
         var cartItem=cart.addItem(product);
-
         cartRepository.save(cart);
-        return cartItemMapper.toDto(cartItem);
+        return cartItem;
     }
 
-    public CartDto getCart( UUID cartId )
+    public Cart getCart( UUID cartId )
     {
         var cart = cartRepository.getCartWithItems(cartId).orElse(null);
         if (cart == null) {
             throw new CartNotFoundException();
         }
-        return cartMapper.toDto(cart);
+        return cart;
     }
 
-    public CartItemDto updateCartItem( UUID cartId, Long productId,Integer quantity )
+    public CartItem updateCartItem(UUID cartId, Long productId, Integer quantity )
     {
         var cart = cartRepository.getCartWithItems(cartId).orElse(null);
 
@@ -74,7 +73,7 @@ public class CartService {
         cartItem.setQuantity(quantity);
         cartRepository.save(cart);
 
-        return cartItemMapper.toDto(cartItem);
+        return cartItem;
 
     }
 
