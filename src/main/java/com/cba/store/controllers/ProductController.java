@@ -1,5 +1,6 @@
 package com.cba.store.controllers;
 
+import com.cba.store.dtos.ErrorDto;
 import com.cba.store.dtos.ProductDto;
 import com.cba.store.dtos.RegisterProductRequest;
 import com.cba.store.entities.Product;
@@ -95,7 +96,7 @@ public class ProductController {
         if(productRepository.existsByName(request.getName()))
         {
             return ResponseEntity.badRequest().body(
-                    Map.of("product","product already exists")
+                   new ErrorDto("product already exists")
             );
         }
         var product = productMapper.toEntity(request);
