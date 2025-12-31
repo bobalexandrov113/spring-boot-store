@@ -34,6 +34,10 @@ public class CheckoutService {
         }
         var order = Order.fromCart(cart, authService.getCurrentUser());
         orderRepository.save(order);
+
+        //Create a checkout Session
+
+
         cartService.clearCart(cart.getId());
         return new CheckoutResponse(order.getId());
     }
