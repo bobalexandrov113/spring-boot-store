@@ -19,9 +19,10 @@ public class CheckoutService {
     private final AuthService authService;
     private final OrderRepository orderRepository;
 
+    @Value("${websiteUrl}")
+    private String websiteUrl;
 
     public CheckoutResponse checkout(CheckoutRequest request) {
-
         var cart = cartService.getCart(request.getCartId());
 
         if (cart == null) {
