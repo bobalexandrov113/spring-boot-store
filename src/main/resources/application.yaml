@@ -17,4 +17,5 @@ datasets:
   ccdp_dataset_name: product_common_claim_dev_st9
   ccdp_dataset_internal: product_common_claim_internaldev_st9
 stripe:
-  secretKey=${STRIPE_SECRET_KEY}
+  secretKey: ${STRIPE_SECRET_KEY}
+websiteUrl: http://localhost:8080
