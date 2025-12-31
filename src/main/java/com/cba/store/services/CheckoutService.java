@@ -7,10 +7,15 @@ import com.cba.store.exceptions.CartEmptyException;
 import com.cba.store.exceptions.CartNotFoundException;
 import com.cba.store.repositories.OrderRepository;
 
+import com.stripe.exception.StripeException;
+import com.stripe.model.checkout.Session;
+import com.stripe.param.checkout.SessionCreateParams;
 import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @RequiredArgsConstructor
 @Service
@@ -22,7 +27,8 @@ public class CheckoutService {
     @Value("${websiteUrl}")
     private String websiteUrl;
 
-    public CheckoutResponse checkout(CheckoutRequest request) {
+    @Transactional
+    public ResponseEntity<?> checkout(CheckoutRequest request) throws StripeException {
         var cart = cartService.getCart(request.getCartId());
 
         if (cart == null) {
@@ -37,8 +43,35 @@ public class CheckoutService {
 
         //Create a checkout Session
 
+        try {
+            var builder = SessionCreateParams.builder()
+                    .setMode(SessionCreateParams.Mode.PAYMENT)
+                    .setSuccessUrl(websiteUrl + "/checkout-success?order_id=" + order.getId())
+                    .setCancelUrl(websiteUrl + "/checkout-cancel?order_id=" + order.getId());
 
-        cartService.clearCart(cart.getId());
-        return new CheckoutResponse(order.getId());
+            order.getItems().forEach( orderItem -> {
+                var lineItem = SessionCreateParams.LineItem.builder()
+                        .setQuantity( Long.valueOf(orderItem.getQuantity()) )
+                        .setPriceData(SessionCreateParams.LineItem.PriceData.builder()
+                                .setCurrency("cad")
+                                .setUnitAmountDecimal( orderItem.getUnitPrice().movePointRight(2))
+                                .setProductData(SessionCreateParams.LineItem.PriceData.ProductData.builder()
+                                                .setName(orderItem.getProduct().getName())
+                                                .build()
+                                ).build()
+                        ).build();
+
+                var session = builder.addLineItem(lineItem);
+
+            });
+
+            var session = Session.create(builder.build());
+            cartService.clearCart(cart.getId());
+            return  ResponseEntity.ok().body(new CheckoutResponse(order.getId(),session.getUrl())) ;
+        }
+        catch (StripeException e) {
+            orderRepository.delete(order);
+            throw e;
+        }
     }
 }
