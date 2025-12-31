@@ -11,4 +11,5 @@ import lombok.Setter;
 @Data
 public class CheckoutResponse {
     private Long orderId;
+    private String checkoutUrl;
 }
