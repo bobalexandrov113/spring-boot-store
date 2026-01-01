@@ -2,6 +2,7 @@ package com.cba.store.services;
 
 import com.cba.store.dtos.CheckoutResponse;
 import com.cba.store.entities.Order;
+import com.cba.store.entities.OrderItem;
 import com.cba.store.exceptions.PaymentException;
 import com.stripe.exception.StripeException;
 import com.stripe.model.checkout.Session;
@@ -29,18 +30,8 @@ public class StripePaymentGateway implements PaymentGateway
                     .setCancelUrl(websiteUrl + "/checkout-cancel?order_id=" + order.getId());
 
             order.getItems().forEach(orderItem -> {
-                var lineItem = SessionCreateParams.LineItem.builder()
-                        .setQuantity(Long.valueOf(orderItem.getQuantity()))
-                        .setPriceData(SessionCreateParams.LineItem.PriceData.builder()
-                                .setCurrency("cad")
-                                .setUnitAmountDecimal(orderItem.getUnitPrice().movePointRight(2))
-                                .setProductData(SessionCreateParams.LineItem.PriceData.ProductData.builder()
-                                        .setName(orderItem.getProduct().getName())
-                                        .build()
-                                ).build()
-                        ).build();
-
-                var session = builder.addLineItem(lineItem);
+                var lineItem = createLineItem(orderItem);
+                builder.addLineItem(lineItem);
 
             });
 
@@ -52,4 +43,27 @@ public class StripePaymentGateway implements PaymentGateway
                 throw new PaymentException(e.getMessage());
             }
     }
+
+    private static SessionCreateParams.LineItem createLineItem(OrderItem orderItem) {
+        return SessionCreateParams.LineItem.builder()
+                .setQuantity(Long.valueOf(orderItem.getQuantity()))
+                .setPriceData(createPriceData(orderItem)
+                ).build();
+    }
+
+    private static SessionCreateParams.LineItem.PriceData createPriceData(OrderItem orderItem) {
+        return SessionCreateParams.LineItem.PriceData.builder()
+                .setCurrency("cad")
+                .setUnitAmountDecimal(orderItem.getUnitPrice().movePointRight(2))
+                .setProductData(createProductData(orderItem)
+                ).build();
+    }
+
+    private static SessionCreateParams.LineItem.PriceData.ProductData createProductData(OrderItem orderItem) {
+        return SessionCreateParams.LineItem.PriceData.ProductData.builder()
+                .setName(orderItem.getProduct().getName())
+                .build();
+    }
+
+
 }
