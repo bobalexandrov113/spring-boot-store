@@ -1,0 +1,34 @@
+///////////////////// STRIPE EVENTS ///////////////////////////////////////
+PS C:\Users\Boris\IdeaProjects\store> stripe trigger payment_intent.succeeded --add "payment_intent:metadata[order_id]=21"
+Setting up fixture for: payment_intent
+Running fixture for: payment_intent
+Trigger succeeded! Check dashboard for event details.
+PS C:\Users\Boris\IdeaProjects\store>
+
+////////////////////////////STRIPE SERVER /////////////////////////:
+
+PS C:\Users\Boris\IdeaProjects\store> stripe login
+Your pairing code is: favour-honor-unreal-finest
+This pairing code verifies your authentication with Stripe.
+Press Enter to open the browser or visit https://dashboard.stripe.com/stripecli/confirm_auth?t=onjySkEoH2SNnas5Tm5n9S1Z3QsMfrU5 (^C to quit)
+> Done! The Stripe CLI is configured for Custom Built Apps ltd with account id acct_1SiergL5wWy397Ig
+
+Please note: this key will expire after 90 days, at which point you'll need to re-authenticate.
+PS C:\Users\Boris\IdeaProjects\store> stripe listen --forward-to http://localhost:8080/checkout/webhook
+> Ready! You are using Stripe API Version [2025-12-15.clover]. Your webhook signing secret is whsec_06c5f978b2a64802531c3cfc3e3f9c021c4d28ef67b991b84d5bfbf7b48afe15 (^C to quit)
+2026-01-01 12:44:50   --> charge.succeeded [evt_3SkpvZL5wWy397Ig1lCaHTOg]
+2026-01-01 12:44:50   --> payment_intent.succeeded [evt_3SkpvZL5wWy397Ig1d0Udhui]
+2026-01-01 12:44:50   --> payment_intent.created [evt_3SkpvZL5wWy397Ig1rcmMqLw]
+2026-01-01 12:44:50  <--  [200] POST http://localhost:8080/checkout/webhook [evt_3SkpvZL5wWy397Ig1rcmMqLw]
+2026-01-01 12:44:50  <--  [200] POST http://localhost:8080/checkout/webhook [evt_3SkpvZL5wWy397Ig1lCaHTOg]
+2026-01-01 12:44:50  <--  [500] POST http://localhost:8080/checkout/webhook [evt_3SkpvZL5wWy397Ig1d0Udhui]
+2026-01-01 12:44:52   --> charge.updated [evt_3SkpvZL5wWy397Ig1yFynCOY]
+2026-01-01 12:44:52  <--  [200] POST http://localhost:8080/checkout/webhook [evt_3SkpvZL5wWy397Ig1yFynCOY]
+2026-01-01 12:48:34   --> charge.succeeded [evt_3SkpzBL5wWy397Ig1mNuOwr4]
+2026-01-01 12:48:34  <--  [200] POST http://localhost:8080/checkout/webhook [evt_3SkpzBL5wWy397Ig1mNuOwr4]
+2026-01-01 12:48:34   --> payment_intent.succeeded [evt_3SkpzBL5wWy397Ig1Q3WDlw1]
+2026-01-01 12:48:34  <--  [200] POST http://localhost:8080/checkout/webhook [evt_3SkpzBL5wWy397Ig1Q3WDlw1]
+2026-01-01 12:48:34   --> payment_intent.created [evt_3SkpzBL5wWy397Ig1eGgA4XU]
+2026-01-01 12:48:34  <--  [200] POST http://localhost:8080/checkout/webhook [evt_3SkpzBL5wWy397Ig1eGgA4XU]
+2026-01-01 12:48:37   --> charge.updated [evt_3SkpzBL5wWy397Ig10t1vXBf]
+2026-01-01 12:48:37  <--  [200] POST http://localhost:8080/checkout/webhook [evt_3SkpzBL5wWy397Ig10t1vXBf]
