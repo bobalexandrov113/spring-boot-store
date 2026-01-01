@@ -5,13 +5,10 @@ import com.cba.store.dtos.CheckoutResponse;
 import com.cba.store.entities.Order;
 import com.cba.store.exceptions.CartEmptyException;
 import com.cba.store.exceptions.CartNotFoundException;
+import com.cba.store.exceptions.PaymentException;
 import com.cba.store.repositories.OrderRepository;
 
-import com.stripe.exception.StripeException;
-import com.stripe.model.checkout.Session;
-import com.stripe.param.checkout.SessionCreateParams;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,12 +19,12 @@ public class CheckoutService {
     private final CartService cartService;
     private final AuthService authService;
     private final OrderRepository orderRepository;
+    private final PaymentGateway paymentGateway;
 
-    @Value("${websiteUrl}")
-    private String websiteUrl;
+
 
     @Transactional
-    public ResponseEntity<?> checkout(CheckoutRequest request) throws StripeException {
+    public CheckoutResponse checkout(CheckoutRequest request) throws PaymentException {
         var cart = cartService.getCart(request.getCartId());
 
         if (cart == null) {
@@ -39,38 +36,14 @@ public class CheckoutService {
         }
         var order = Order.fromCart(cart, authService.getCurrentUser());
         orderRepository.save(order);
-
-        //Create a checkout Session
-
-        try {
-            var builder = SessionCreateParams.builder()
-                    .setMode(SessionCreateParams.Mode.PAYMENT)
-                    .setSuccessUrl(websiteUrl + "/checkout-success?order_id=" + order.getId())
-                    .setCancelUrl(websiteUrl + "/checkout-cancel?order_id=" + order.getId());
-
-            order.getItems().forEach( orderItem -> {
-                var lineItem = SessionCreateParams.LineItem.builder()
-                        .setQuantity( Long.valueOf(orderItem.getQuantity()) )
-                        .setPriceData(SessionCreateParams.LineItem.PriceData.builder()
-                                .setCurrency("cad")
-                                .setUnitAmountDecimal( orderItem.getUnitPrice().movePointRight(2))
-                                .setProductData(SessionCreateParams.LineItem.PriceData.ProductData.builder()
-                                                .setName(orderItem.getProduct().getName())
-                                                .build()
-                                ).build()
-                        ).build();
-
-                var session = builder.addLineItem(lineItem);
-
-            });
-
-            var session = Session.create(builder.build());
-            cartService.clearCart(cart.getId());
-            return  ResponseEntity.ok().body(new CheckoutResponse(order.getId(),session.getUrl())) ;
-        }
-        catch (StripeException e) {
-            orderRepository.delete(order);
-            throw e;
-        }
+    try{
+        var checkoutSession = paymentGateway.createCheckoutSession(order);
+        cartService.clearCart(cart.getId());
+        return new CheckoutResponse(order.getId(), checkoutSession.getCheckoutUrl()) ;
+    }
+    catch (PaymentException e) {
+        orderRepository.delete(order);
+        throw e;
+    }
     }
 }

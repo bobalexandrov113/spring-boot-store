@@ -5,6 +5,7 @@ import com.cba.store.dtos.CheckoutResponse;
 import com.cba.store.dtos.ErrorDto;
 import com.cba.store.exceptions.CartEmptyException;
 import com.cba.store.exceptions.CartNotFoundException;
+import com.cba.store.exceptions.PaymentException;
 import com.cba.store.services.CheckoutService;
 import com.stripe.exception.StripeException;
 import jakarta.validation.Valid;
@@ -21,17 +22,22 @@ public class CheckoutController {
     private CheckoutService checkoutService;
 
     @PostMapping
-    public ResponseEntity<?> checkout (
+    public CheckoutResponse checkout(
     @Valid @RequestBody CheckoutRequest request) {
-        try {
-            return ResponseEntity.ok(checkoutService.checkout(request));
-        } catch (StripeException e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ErrorDto(e.getMessage()));
-        }
+
+            return checkoutService.checkout(request);
+
     }
     @ExceptionHandler({CartNotFoundException.class, CartEmptyException.class})
     public ResponseEntity<ErrorDto> handleException(Exception ex)
     {
         return ResponseEntity.badRequest().body(new ErrorDto(ex.getMessage()));
     }
+
+    @ExceptionHandler(PaymentException.class)
+    public ResponseEntity<ErrorDto> handlePaymentException(PaymentException e)
+    {
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ErrorDto(e.getMessage()));
+    }
+
 }
