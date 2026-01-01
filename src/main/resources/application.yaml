@@ -18,4 +18,5 @@ datasets:
   ccdp_dataset_internal: product_common_claim_internaldev_st9
 stripe:
   secretKey: ${STRIPE_SECRET_KEY}
+  webhookSecretKey: ${STRIPE_WEBHOOK_SECRET_KEY}
 websiteUrl: http://localhost:8080

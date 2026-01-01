@@ -44,14 +44,14 @@ public class StripePaymentGateway implements PaymentGateway
             }
     }
 
-    private static SessionCreateParams.LineItem createLineItem(OrderItem orderItem) {
+    private  SessionCreateParams.LineItem createLineItem(OrderItem orderItem) {
         return SessionCreateParams.LineItem.builder()
                 .setQuantity(Long.valueOf(orderItem.getQuantity()))
                 .setPriceData(createPriceData(orderItem)
                 ).build();
     }
 
-    private static SessionCreateParams.LineItem.PriceData createPriceData(OrderItem orderItem) {
+    private SessionCreateParams.LineItem.PriceData createPriceData(OrderItem orderItem) {
         return SessionCreateParams.LineItem.PriceData.builder()
                 .setCurrency("cad")
                 .setUnitAmountDecimal(orderItem.getUnitPrice().movePointRight(2))
@@ -59,7 +59,7 @@ public class StripePaymentGateway implements PaymentGateway
                 ).build();
     }
 
-    private static SessionCreateParams.LineItem.PriceData.ProductData createProductData(OrderItem orderItem) {
+    private  SessionCreateParams.LineItem.PriceData.ProductData createProductData(OrderItem orderItem) {
         return SessionCreateParams.LineItem.PriceData.ProductData.builder()
                 .setName(orderItem.getProduct().getName())
                 .build();
