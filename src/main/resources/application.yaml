@@ -1,22 +1,12 @@
 spring:
   application:
     name: store
-  datasource:
-    url: jdbc:mysql://localhost:3306/store?createIfNotExist=true
-    username: root
-    password: 2MuchTime!
-  flyway:
-    baseline-on-migrate: true
-  jpa:
-    show-sql: true
   jwt:
     secret: ${JWT_SECRET}
-    accessTokenExpiration: 7200
-    refreshTokenExpiration: 604800
-datasets:
-  ccdp_dataset_name: product_common_claim_dev_st9
-  ccdp_dataset_internal: product_common_claim_internaldev_st9
+    accessTokenExpiration: 900 # 15m
+    refreshTokenExpiration: 604800 # 7d
+  profiles:
+    active: dev
 stripe:
   secretKey: ${STRIPE_SECRET_KEY}
   webhookSecretKey: ${STRIPE_WEBHOOK_SECRET_KEY}
-websiteUrl: http://localhost:8080

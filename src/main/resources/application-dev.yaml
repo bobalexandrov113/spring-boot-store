@@ -1,0 +1,8 @@
+spring:
+  datasource:
+    url: jdbc:mysql://localhost:3306/store?createIfNotExist=true
+    username: root
+    password: 2MuchTime!
+  jpa:
+    show-sql: true
+websiteUrl: http://localhost:8080

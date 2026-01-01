@@ -2,10 +2,8 @@ package com.cba.store;
 
 import com.cba.store.entities.Address;
 import com.cba.store.entities.Product;
-import com.cba.store.entities.User;
-import com.cba.store.repositories.UserRepository;
+import com.cba.store.users.UserRepository;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
