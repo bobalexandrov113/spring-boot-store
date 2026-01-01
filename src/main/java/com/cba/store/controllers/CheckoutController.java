@@ -9,6 +9,7 @@ import com.cba.store.exceptions.CartNotFoundException;
 import com.cba.store.exceptions.PaymentException;
 import com.cba.store.repositories.OrderRepository;
 import com.cba.store.services.CheckoutService;
+import com.cba.store.services.WebhookRequest;
 import com.stripe.exception.SignatureVerificationException;
 import com.stripe.exception.StripeException;
 import com.stripe.model.PaymentIntent;
@@ -21,6 +22,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Map;
+
 @RestController
 @RequestMapping("/checkout")
 
@@ -30,8 +33,7 @@ public class CheckoutController {
     private final CheckoutService checkoutService;
     private final OrderRepository orderRepository;
 
-    @Value("${stripe.webhookSecretKey}")
-    private String webhookSecretKey;
+
 
     @PostMapping
     public CheckoutResponse checkout(
@@ -43,39 +45,12 @@ public class CheckoutController {
 
     @PostMapping("/webhook")
     public ResponseEntity<Void> handleWebhook(
-            @RequestHeader("Stripe-Signature") String signature,
+            @RequestHeader Map<String,String> headers,
             @RequestBody String payload
     )
     {
-        try {
-            var event = Webhook.constructEvent(payload,signature,webhookSecretKey);
-            System.out.println(event.getType());
-            var stripeObject = event.getDataObjectDeserializer().getObject().orElse(null);
-            //charge -> (Charge)stripeObject
-            //payment_intent
-
-            switch(event.getType()) {
-                case "payment_intent.succeeded" ->{
-                    //update order status (PAID)
-                    var paymentIntent = (PaymentIntent) stripeObject;
-                    if(paymentIntent != null) {
-                        var orderId = paymentIntent.getMetadata().get("order_id");
-                        var order = orderRepository.findById(Long.valueOf(orderId)).orElseThrow();
-                        order.setStatus(OrderStatus.PAID);
-                        orderRepository.save(order);
-                    }
-
-                }
-                case "payment_intent.failed" ->{
-                    //update order status (FAILED)
-                }
-            }
+            checkoutService.handleWebhookEvent(new WebhookRequest(headers,payload));
             return ResponseEntity.ok().build();
-
-        } catch (SignatureVerificationException e) {
-            throw new RuntimeException(e);
-        }
-
     }
 
 
