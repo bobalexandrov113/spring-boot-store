@@ -1,4 +1,4 @@
-package admin;
+package com.cba.store.admin;
 
 import com.cba.store.common.SecurityRules;
 import com.cba.store.entities.Role;
@@ -11,6 +11,6 @@ import org.springframework.stereotype.Component;
 public class AdminSecurityRules implements SecurityRules {
     @Override
     public void configure(AuthorizeHttpRequestsConfigurer<HttpSecurity>.AuthorizationManagerRequestMatcherRegistry registry) {
-        registry.requestMatchers("/admin/**").hasRole(Role.ADMIN.name());
+        registry.requestMatchers("/com/cba/store/admin/**").hasRole(Role.ADMIN.name());
     }
 }
