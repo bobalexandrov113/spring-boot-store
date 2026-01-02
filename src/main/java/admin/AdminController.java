@@ -1,4 +1,4 @@
-package com.cba.store.common;
+package admin;
 
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;

@@ -1,6 +1,7 @@
 package com.cba.store.auth;
 
 
+import com.cba.store.common.SecurityRules;
 import com.cba.store.entities.Role;
 import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -21,6 +22,8 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.HttpStatusEntryPoint;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+import java.util.List;
+
 @Configuration
 @EnableWebSecurity
 @AllArgsConstructor
@@ -28,6 +31,8 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class SecurityConfiguration {
     private final UserDetailsService userDetailsService;
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
+    private final List<SecurityRules> featureSecurityRules;
+
 
     @Bean
     public BCryptPasswordEncoder passwordEncoder() {
@@ -50,15 +55,11 @@ public class SecurityConfiguration {
         http.sessionManagement(c->c.
                 sessionCreationPolicy(SessionCreationPolicy.STATELESS));
         http.csrf(AbstractHttpConfigurer::disable);
-        http.authorizeHttpRequests(a->a
-                .requestMatchers("/login","/","/error/**").permitAll()
-                .requestMatchers("/swagger-ui.html","/swagger-ui/**","/v3/api-docs/**").permitAll()
-                .requestMatchers(HttpMethod.POST,"/checkout/webhook").permitAll()
-                .requestMatchers("/admin/**").hasRole(Role.ADMIN.name())
-                .requestMatchers("/users/**").hasRole(Role.ADMIN.name())
-                .requestMatchers(HttpMethod.POST, "/users/**","/auth/login","/auth/refresh").permitAll()
-                .anyRequest().authenticated());
-
+        http.authorizeHttpRequests(c-> {
+            featureSecurityRules.forEach(r -> r.configure(c));
+            c.anyRequest().authenticated();
+        }
+        );
         return http.build();
     }
 
