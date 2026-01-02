@@ -34,7 +34,10 @@ public class StripePaymentGateway implements PaymentGateway
                     .setMode(SessionCreateParams.Mode.PAYMENT)
                     .setSuccessUrl(websiteUrl + "/checkout-success?order_id=" + order.getId())
                     .setCancelUrl(websiteUrl + "/checkout-cancel")
-                    .putMetadata("order_id",order.getId().toString());
+                    .setPaymentIntentData(SessionCreateParams.PaymentIntentData.builder()
+                            .putMetadata("order_id",order.getId().toString())
+                            .build()
+                    );
 
             order.getItems().forEach(orderItem -> {
                 var lineItem = createLineItem(orderItem);
