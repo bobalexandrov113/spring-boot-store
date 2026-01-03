@@ -47,14 +47,22 @@ public class CheckoutService {
 
     public void handleWebhookEvent(WebhookRequest webhookRequest)
     {
-            paymentGateway.parseWebhookRequest(webhookRequest)
-            .ifPresent(paymentResult -> {
+             var result = paymentGateway.parseWebhookRequest(webhookRequest);
 
+            result.ifPresent(paymentResult -> {
+             System.out.println(paymentResult.toString());
               var orderId = paymentResult.getOrderId();
               var order = orderRepository.findById(orderId).orElseThrow();
               order.setStatus(paymentResult.getPaymentStatus());
               orderRepository.save(order);
           });
+            if (result.isEmpty())
+            {
+                System.out.println("Got no result");
+            }
+
+
+                                ;
 
     }
 }

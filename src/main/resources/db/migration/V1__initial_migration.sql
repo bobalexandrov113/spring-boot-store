@@ -1,48 +1,47 @@
 CREATE TABLE addresses
 (
-    id      INT AUTO_INCREMENT NOT NULL,
+    id      INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     street  VARCHAR(255)       NULL,
     city    VARCHAR(255)       NULL,
     zip     VARCHAR(255)       NOT NULL,
     user_id BIGINT             NOT NULL,
-    state   VARCHAR(255)       NULL,
-    CONSTRAINT `PRIMARY` PRIMARY KEY (id)
+    state   VARCHAR(255)       NULL
+
 );
 
 CREATE TABLE categories
 (
-    id   TINYINT AUTO_INCREMENT NOT NULL,
-    name VARCHAR(255)           NULL,
-    CONSTRAINT `PRIMARY` PRIMARY KEY (id)
+    id   SMALLINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    name VARCHAR(255)           NULL
+
 );
 
 CREATE TABLE products
 (
-    id          BIGINT AUTO_INCREMENT NOT NULL,
+    id          BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     name        VARCHAR(255)          NOT NULL,
     description        VARCHAR(255)          NOT NULL,
     price       DECIMAL(10, 2)        NOT NULL,
-    category_id TINYINT               NULL,
-    CONSTRAINT `PRIMARY` PRIMARY KEY (id)
+    category_id SMALLINT               NULL
+
 );
 
 CREATE TABLE profiles
 (
-    id             BIGINT        NOT NULL,
+    id             BIGINT        PRIMARY KEY,
     bio            VARCHAR(255)  NOT NULL,
     phone_number   VARCHAR(255)  NOT NULL,
     date_of_birth  date          NOT NULL,
-    loyalty_points INT DEFAULT 0 NULL,
-    CONSTRAINT `PRIMARY` PRIMARY KEY (id)
+    loyalty_points INT DEFAULT 0 NULL
+
 );
 
 CREATE TABLE users
 (
-    id       BIGINT AUTO_INCREMENT NOT NULL,
+    id       BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     name     VARCHAR(255)          NOT NULL,
     email    VARCHAR(255)          NOT NULL,
-    password VARCHAR(255)          NOT NULL,
-    CONSTRAINT `PRIMARY` PRIMARY KEY (id)
+    password VARCHAR(255)          NOT NULL
 );
 
 

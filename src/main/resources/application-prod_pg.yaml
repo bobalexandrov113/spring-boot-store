@@ -1,0 +1,12 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/store?currentSchema=dataexplorer1
+    username: dataexplorer1
+    password: 2MuchTime
+  jpa:
+    show-sql: true
+    properties:
+      hibernate:
+        default_schema: dataexplorer1
+
+websiteUrl: https://www.custom-built-apps.com

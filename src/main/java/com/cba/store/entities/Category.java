@@ -14,7 +14,7 @@ import lombok.*;
 @Builder
 @ToString
 
-@Table(name = "categories", schema = "store")
+@Table(name = "categories")
 public class Category {
     @Id
     @Column(name = "id", nullable = false)

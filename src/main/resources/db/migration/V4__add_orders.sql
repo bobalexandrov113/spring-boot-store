@@ -1,15 +1,15 @@
 create table orders
 (
-    id bigint auto_increment primary key,
+    id bigint PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
     customer_id bigint not null,
     status varchar(20) not null,
-    created_at datetime default current_timestamp not null,
+    created_at timestamp default current_timestamp,
     total_price decimal(10,2),
     constraint orders_users_id_fk foreign key (customer_id) references users (id)
 );
 create table order_items
 (
-    id bigint auto_increment primary key,
+    id bigint PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
     order_id bigint not null,
     product_id bigint not null,
     unit_price decimal(10,2) not null,

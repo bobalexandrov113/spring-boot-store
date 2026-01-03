@@ -1,14 +1,13 @@
 create table carts
 (
-    id           binary(16) default (uuid_to_bin(uuid())) not null
+    id           UUID default gen_random_uuid()
         primary key,
-    date_created date       default (current_date)        not null
+    date_created date       default CURRENT_DATE
 );
 create table cart_items
 (
-    id         int           auto_increment
-        primary key,
-    cart_id    binary(16)    not null,
+    id         int           PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
+    cart_id    UUID    not null,
     product_id bigint        not null,
     quantity   int default 1 not null,
     constraint cart_items_carts_id_fk
@@ -17,5 +16,5 @@ create table cart_items
     constraint cart_items_products_id_fk
         foreign key (product_id) references products (id)
             on delete cascade,
-    constraint unique  cart_items_unique(product_id,cart_id)
+     unique(product_id,cart_id)
 );

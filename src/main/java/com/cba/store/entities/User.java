@@ -3,10 +3,13 @@ package com.cba.store.entities;
 import jakarta.persistence.*;
 import lombok.*;
 
+
+
+
 @Getter
 @Setter
 @Entity
-@Table(name = "users", schema = "store")
+@Table(name = "users")
 @AllArgsConstructor
 @NoArgsConstructor
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)

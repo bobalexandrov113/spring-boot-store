@@ -1,6 +1,7 @@
 package com.cba.store.users;
 
 import com.cba.store.auth.ChangePasswordRequest;
+import com.cba.store.common.ErrorDto;
 import com.cba.store.entities.Role;
 import com.cba.store.entities.User;
 import jakarta.validation.Valid;
@@ -53,12 +54,13 @@ public class UserController {
             @Valid @RequestBody RegisterUserRequest request) {
         if(userRepository.existsByEmail(request.getEmail())){
             return ResponseEntity.badRequest().body(
-                    Map.of("email","Email has already been registered")
+                    new ErrorDto("Email has already been registered")
                    );
         }
         var user = userMapper.toEntity(request);
         user.setPassword(passwordEncoder.encode(user.getPassword()));
-        user.setRole(Role.USER);
+
+        user.setRole(Role.valueOf(request.getRole()));
         userRepository.save(user);
         UserDto userDto = userMapper.userToUserDto(user);
         var uri = URI.create("/users/" + user.getId());

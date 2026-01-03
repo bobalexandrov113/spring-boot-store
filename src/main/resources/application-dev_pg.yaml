@@ -1,0 +1,12 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://192.168.2.22:5432/store?currentSchema=dataexplorer1
+    username: dataexplorer1
+    password: 2MuchTime
+  jpa:
+    show-sql: true
+    properties:
+      hibernate:
+        default_schema: dataexplorer1
+
+websiteUrl: http://localhost:8080
