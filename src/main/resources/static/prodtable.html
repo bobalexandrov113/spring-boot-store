@@ -27,11 +27,19 @@
 <body>
 
 <h1>Products</h1>
+<button id="loadBtn">Load Products</button>
+
 <div id="table-container">
     Loading data…
 </div>
 
 <script>
+
+    const loadBtn = document.getElementById('loadBtn');
+
+
+    loadBtn.addEventListener('click', loadProducts);
+
     async function loadProducts() {
         try {
             const response = await fetch("/products");
@@ -72,8 +80,6 @@
             console.error(error);
         }
     }
-
-    loadProducts();
 </script>
 
 </body>

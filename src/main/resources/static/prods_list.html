@@ -48,7 +48,7 @@
         // Render products
         if (Array.isArray(data)) {
         productList.innerHTML = '';
-        productList.appendChild("<TABLE>");
+
           data.forEach(product => {
             const li = document.createElement('tr');
             li.textContent = `${product.id} - ${product.name} - ${product.description} - ${product.price} - ${product.categoryId}`;
