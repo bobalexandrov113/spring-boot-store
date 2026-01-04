@@ -57,7 +57,7 @@ public class SecurityConfiguration {
         http.csrf(AbstractHttpConfigurer::disable);
         http.authorizeHttpRequests(c-> {
             featureSecurityRules.forEach(r -> r.configure(c));
-            c.anyRequest().authenticated();
+            c.anyRequest().permitAll();
         }
         );
         return http.build();

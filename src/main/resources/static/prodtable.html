@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Products List</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin-top: 20px;
+        }
+        th, td {
+            border: 1px solid #ccc;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f4f4f4;
+        }
+    </style>
+</head>
+<body>
+
+<h1>Products</h1>
+<div id="table-container">
+    Loading data…
+</div>
+
+<script>
+    async function loadProducts() {
+        try {
+            const response = await fetch("/products");
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            const data = await response.json();
+
+            // Check that we got an array
+            if (!Array.isArray(data) || data.length === 0) {
+                document.getElementById("table-container")
+                    .innerText = "No products found or unexpected JSON format.";
+                return;
+            }
+
+            // Build table dynamically from keys
+            const headers = Object.keys(data[0]);
+            let html = "<table><thead><tr>";
+
+            headers.forEach(h => html += `<th>${h}</th>`);
+            html += "</tr></thead><tbody>";
+
+            data.forEach(item => {
+                html += "<tr>";
+                headers.forEach(h => {
+                    html += `<td>${item[h] ?? ""}</td>`;
+                });
+                html += "</tr>";
+            });
+
+            html += "</tbody></table>";
+
+            document.getElementById("table-container").innerHTML = html;
+
+        } catch (error) {
+            document.getElementById("table-container")
+                .innerText = "Error fetching products: " + error.message;
+            console.error(error);
+        }
+    }
+
+    loadProducts();
+</script>
+
+</body>
+</html>

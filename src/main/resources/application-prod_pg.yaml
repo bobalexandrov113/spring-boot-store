@@ -10,3 +10,6 @@ spring:
         default_schema: dataexplorer1
 
 websiteUrl: https://www.custom-built-apps.com
+server:
+  port: 8080
+  address: 0.0.0.0

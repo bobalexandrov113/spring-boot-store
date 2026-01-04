@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Products List</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 40px;
+    }
+    pre {
+      background: #f4f4f4;
+      padding: 15px;
+      border-radius: 6px;
+      overflow-x: auto;
+    }
+  </style>
+</head>
+<body>
+  <h1>Product Data</h1>
+  <button id="loadBtn">Load Products</button>
+
+  <h2>Raw JSON:</h2>
+  <pre id="jsonOutput">Click “Load Products” to fetch JSON…</pre>
+
+  <h2>Parsed Products:</h2>
+  <ul id="productList"></ul>
+
+  <script>
+    const url = '/products';
+    const loadBtn = document.getElementById('loadBtn');
+    const jsonOutput = document.getElementById('jsonOutput');
+    const productList = document.getElementById('productList');
+
+    loadBtn.addEventListener('click', async () => {
+      try {
+        jsonOutput.textContent = 'Loading…';
+        productList.innerHTML = '';
+
+        const response = await fetch(url);
+        if (!response.ok) {
+          throw new Error('HTTP error! status: ' + response.status);
+        }
+
+        const data = await response.json();
+
+        // Render products
+        if (Array.isArray(data)) {
+        productList.innerHTML = '';
+        productList.appendChild("<TABLE>");
+          data.forEach(product => {
+            const li = document.createElement('tr');
+            li.textContent = `${product.id} - ${product.name} - ${product.description} - ${product.price} - ${product.categoryId}`;
+            productList.appendChild(li);
+          });
+
+        } else {
+          productList.innerHTML = '<li>No array of products found</li>';
+        }
+      } catch (err) {
+        jsonOutput.textContent = 'Error: ' + err.message;
+      }
+    });
+  </script>
+</body>
+</html>
