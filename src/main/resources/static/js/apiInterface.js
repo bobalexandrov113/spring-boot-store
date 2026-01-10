@@ -1,0 +1,141 @@
+async function loginAndGetToken() {
+    const outputElement = document.getElementById('output');
+    if (!outputElement) {
+        throw new Error("No output element found");
+    }
+    const username = document.getElementById('username').value;
+    const password = document.getElementById('password').value;
+
+    const tokenUrl = "/api/login";
+
+    try{
+        const loginResponse = await  fetch(tokenUrl, {
+            method: 'POST',
+            headers: new Headers({"Content-Type": "application/json"}),
+            body: JSON.stringify({
+                email: username,
+                password: password,
+            })
+        });
+        if (loginResponse.status === 200) {
+            const authResponse = await loginResponse.json();
+            const bearerToken = authResponse.token;
+            outputElement.innerHTML = "logged in successfully.";
+            sessionStorage.setItem('jwtToken', bearerToken);
+        }
+        else{
+            outputElement.innerHTML = `Unable to log in successfully.${loginResponse.statusText}`;
+        }
+
+    }
+    catch(error){
+        console.log(error);
+        outputElement.innerHTML = error;
+    }
+}
+
+async function refreshToken() {
+    const outputElement = document.getElementById('output');
+    if (!outputElement) {
+        throw new Error("No output element found");
+    }
+    const tokenUrl = "/api/refreshToken";
+    try {
+        const refreshResponse = await fetch(tokenUrl, {
+            method: 'POST',
+            headers: {
+                "Content-Type": "application/json"
+            },
+        });
+    }
+    catch(error){
+        console.log(error);
+    }
+    if(!refreshResponse.ok)
+    {
+        throw new Error("Failed to refresh token, log in please");
+    }
+    const authResponse = await refreshToken.json();
+    const bearerToken = authResponse.token;
+    outputElement.innerHTML = "refreshed token successfully.";
+    console.log(bearerToken);
+    sessionStorage.setItem('jwtToken', bearerToken);
+}
+
+async function getToken(){
+        const outputElement = document.getElementById('output');
+        if (!outputElement) {
+            throw new Error("No output element found");
+        }
+        const bearerToken = sessionStorage.getItem('jwtToken');
+        if (!bearerToken)
+        {
+            outputElement.innerHTML = "Log in please";
+            throw new Error("No bearer token found, log in please");
+        }
+        let expiryDate = JSON.parse(atob(bearerToken.split('.')[1])).exp*1000;
+        const isTokenExpired = Date.now() > expiryDate;
+        if(isTokenExpired){
+            console.log("Token expired.");
+            await refreshToken();
+        }
+        else {
+            console.log(bearerToken);
+            return bearerToken;
+        }
+        const bearerToken1 = sessionStorage.getItem('jwtToken');
+        console.log(bearerToken1);
+        return bearerToken1;
+}
+
+async function getProtectedResource(protectedApiUrl, bearerToken, method, CACHE_KEY){
+    //check cache for the result first
+    const cachedData = sessionStorage.getItem(CACHE_KEY);
+    if(cachedData)
+    {
+        console.log("Using cached data");
+        return JSON.parse(cachedData);
+    }
+    else
+    {
+        const dataResponse = await fetch(protectedApiUrl, {
+            method: `${method}`,
+            headers: new Headers({"Accept": "application/json", "Content-Type": "application/json","Authorization": `Bearer ${bearerToken}`}),
+
+        });
+        if(dataResponse.status === 200)
+        {
+            const data = await dataResponse.json();
+            sessionStorage.setItem(CACHE_KEY, JSON.stringify(data));
+            return data;
+        }
+        else
+        {
+            throw new Error("failed to get protected resource");
+        }
+    }
+}
+
+function createTable(data){
+    //check whether we are dealing with an array
+    if(!Array.isArray(data) || data.length == 0){
+        document.getElementById("table-container").innerHTML = "Failed to create table";
+        return;
+    }
+    const headers = Object.keys(data[0]);
+    let html = "<table><thead><tr>";
+    headers.forEach(header => {
+        html += `<th>${header}</th>`;
+    });
+    html += `</tr></thead><tbody>`;
+
+    data.forEach(row => {
+        html += "<tr>";
+        headers.forEach(header => {
+            html += `<td>${row[header]}</td>`;
+        });
+        html += "</tr>";
+    });
+    html += "</tbody></table>";
+    document.getElementById("table-container").innerHTML = html;
+}
