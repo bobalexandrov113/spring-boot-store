@@ -1,3 +1,4 @@
+let baseUrl = '/store';
 async function loginAndGetToken() {
     const outputElement = document.getElementById('output');
     if (!outputElement) {
@@ -6,7 +7,7 @@ async function loginAndGetToken() {
     const username = document.getElementById('username').value;
     const password = document.getElementById('password').value;
 
-    const tokenUrl = "/store/auth/login";
+    const tokenUrl = baseUrl + "/auth/login";
 
     try{
         const loginResponse = await  fetch(tokenUrl, {
@@ -39,7 +40,7 @@ async function refreshToken() {
     if (!outputElement) {
         throw new Error("No output element found");
     }
-    const tokenUrl = "/store/auth/refreshToken";
+    const tokenUrl = baseUrl + "/auth/refreshToken";
     try {
         const refreshResponse = await fetch(tokenUrl, {
             method: 'POST',
@@ -147,7 +148,7 @@ async function getProducts(){
     tableElement.innerHTML = '';
     const bearerToken = await getToken();
     outputElement.innerHTML = 'fetching products...';
-    const protectedApiUrl = "/store/products";
+    const protectedApiUrl = baseUrl + "/products";
     const method = 'GET';
     const CACHE_KEY = 'apiProductsCache';
     try{

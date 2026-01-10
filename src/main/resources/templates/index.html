@@ -3,37 +3,26 @@
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/icon?family=Material+Symbols+Outlined" rel="stylesheet">
     <link rel="icon" type="image/x-icon" href="/favicon.png">
+    <link rel="stylesheet" href="/store/css/light.css">
+    <link rel="stylesheet" type="text/css" href="/store/css/cba.css">
     <script src="/store/js/bundle.js" type="module">
         import {styles as typescaleStyles} from '@material/web/typography/md-typescale-styles.js';
 
         document.adoptedStyleSheets.push(typescaleStyles.styleSheet);
     </script>
 
-    <style>
-        .sub_div {
-            position: relative;
-            bottom: 0px;
-            background-color:#99C2C2;
-            width: 100%;
-        }
-        .top_div {
-            position: absolute;
-            top: 0px;
-            background-color:#99C2C2;
-            width: 100%;
 
-        }
-    </style>
-    <link rel="stylesheet" type="text/css" href="/store/css/cba.css">
 
 
 <style>
+    :root {
+        --md-ref-typeface-brand: 'Open Sans';
+        --md-ref-typeface-plain: 'Open Sans';
+    }
     md-elevated-button {
-        width: 170px;
+        width: 200px;
     }
-    md-outlined-text-field {
-        --md-outlined-text-field-focus-input-text-color: green;
-    }
+
     table {
         border-collapse: collapse;
         width: 100%;
@@ -53,7 +42,7 @@
     <script src="/store/js/endpoints.js"></script>
 </head>
 
-<body>
+<body class="light">
 <div class="container">
     <div class="left-panel">
         <div class="cbox">
