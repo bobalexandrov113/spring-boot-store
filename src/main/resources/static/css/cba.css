@@ -1,0 +1,25 @@
+.container {
+    display: flex;
+    gap: 0;
+}
+
+.left-panel {
+    width: 300px;
+    background: var(--body-background-color);
+}
+.right-panel {
+    flex-grow: 1;
+    padding: 0 15px;
+    background: var(--body-background-color);
+    height: 100dvh;
+}
+.cbox {
+    justify-content: flex-start;
+    padding: 0 15px;
+    border-radius: 25px;
+    border: 2px solid green;
+    width: 240px;
+    height: 870px;
+    box-shadow: 1px 2px 3px 4px rgba(191,191,191,0.6);
+    margin-left: 1px;
+}
