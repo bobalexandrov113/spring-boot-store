@@ -1,4 +1,4 @@
-export async function loginAndGetToken() {
+async function loginAndGetToken() {
     const outputElement = document.getElementById('output');
     if (!outputElement) {
         throw new Error("No output element found");
@@ -6,7 +6,7 @@ export async function loginAndGetToken() {
     const username = document.getElementById('username').value;
     const password = document.getElementById('password').value;
 
-    const tokenUrl = "/auth/login";
+    const tokenUrl = "/store/auth/login";
 
     try{
         const loginResponse = await  fetch(tokenUrl, {
@@ -34,12 +34,12 @@ export async function loginAndGetToken() {
     }
 }
 
-export async function refreshToken() {
+async function refreshToken() {
     const outputElement = document.getElementById('output');
     if (!outputElement) {
         throw new Error("No output element found");
     }
-    const tokenUrl = "/auth/refreshToken";
+    const tokenUrl = "/store/auth/refreshToken";
     try {
         const refreshResponse = await fetch(tokenUrl, {
             method: 'POST',
@@ -62,33 +62,33 @@ export async function refreshToken() {
     sessionStorage.setItem('jwtToken', bearerToken);
 }
 
-export async function getToken(){
-        const outputElement = document.getElementById('output');
-        if (!outputElement) {
-            throw new Error("No output element found");
-        }
-        const bearerToken = sessionStorage.getItem('jwtToken');
-        if (!bearerToken)
-        {
-            outputElement.innerHTML = "Log in please";
-            throw new Error("No bearer token found, log in please");
-        }
-        let expiryDate = JSON.parse(atob(bearerToken.split('.')[1])).exp*1000;
-        const isTokenExpired = Date.now() > expiryDate;
-        if(isTokenExpired){
-            console.log("Token expired.");
-            await refreshToken();
-        }
-        else {
-            console.log(bearerToken);
-            return bearerToken;
-        }
-        const bearerToken1 = sessionStorage.getItem('jwtToken');
-        console.log(bearerToken1);
-        return bearerToken1;
+async function getToken(){
+    const outputElement = document.getElementById('output');
+    if (!outputElement) {
+        throw new Error("No output element found");
+    }
+    const bearerToken = sessionStorage.getItem('jwtToken');
+    if (!bearerToken)
+    {
+        outputElement.innerHTML = "Log in please";
+        throw new Error("No bearer token found, log in please");
+    }
+    let expiryDate = JSON.parse(atob(bearerToken.split('.')[1])).exp*1000;
+    const isTokenExpired = Date.now() > expiryDate;
+    if(isTokenExpired){
+        console.log("Token expired.");
+        await refreshToken();
+    }
+    else {
+        console.log(bearerToken);
+        return bearerToken;
+    }
+    const bearerToken1 = sessionStorage.getItem('jwtToken');
+    console.log(bearerToken1);
+    return bearerToken1;
 }
 
-export async function getProtectedResource(protectedautUrl, bearerToken, method, CACHE_KEY){
+async function getProtectedResource(protectedautUrl, bearerToken, method, CACHE_KEY){
     //check cache for the result first
     const cachedData = sessionStorage.getItem(CACHE_KEY);
     if(cachedData)
@@ -116,7 +116,7 @@ export async function getProtectedResource(protectedautUrl, bearerToken, method,
     }
 }
 
-export function createTable(data){
+function createTable(data){
     //check whether we are dealing with an array
     if(!Array.isArray(data) || data.length == 0){
         document.getElementById("table-container").innerHTML = "Failed to create table";
@@ -138,4 +138,25 @@ export function createTable(data){
     });
     html += "</tbody></table>";
     document.getElementById("table-container").innerHTML = html;
+}
+
+async function getProducts(){
+    const outputElement = document.getElementById('output');
+    const tableElement = document.getElementById('table-container');
+    outputElement.innerHTML = '';
+    tableElement.innerHTML = '';
+    const bearerToken = await getToken();
+    outputElement.innerHTML = 'fetching products...';
+    const protectedApiUrl = "/store/products";
+    const method = 'GET';
+    const CACHE_KEY = 'apiProductsCache';
+    try{
+        const data = await getProtectedResource(protectedApiUrl, bearerToken, method, CACHE_KEY);
+        createTable(data);
+        outputElement.innerHTML = '<h2>Products</h2>';
+    }
+    catch(error){
+        console.error(error);
+        outputElement.innerHTML = error;
+    }
 }

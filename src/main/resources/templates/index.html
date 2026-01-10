@@ -1,9 +1,77 @@
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
-<body>
+<html lang="en" >
+<head>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Symbols+Outlined" rel="stylesheet">
+    <link rel="icon" type="image/x-icon" href="/favicon.png">
+    <script src="/store/js/bundle.js" type="module">
+        import {styles as typescaleStyles} from '@material/web/typography/md-typescale-styles.js';
 
-<h3>
-    Hello, <span th:text="${name}"></span>
-</h3>
+        document.adoptedStyleSheets.push(typescaleStyles.styleSheet);
+    </script>
+
+    <style>
+        .sub_div {
+            position: relative;
+            bottom: 0px;
+            background-color:#99C2C2;
+            width: 100%;
+        }
+        .top_div {
+            position: absolute;
+            top: 0px;
+            background-color:#99C2C2;
+            width: 100%;
+
+        }
+    </style>
+    <link rel="stylesheet" type="text/css" href="/store/css/cba.css">
+
+
+<style>
+    md-elevated-button {
+        width: 170px;
+    }
+    md-outlined-text-field {
+        --md-outlined-text-field-focus-input-text-color: green;
+    }
+    table {
+        border-collapse: collapse;
+        width: 100%;
+        margin-top: 20px;
+        color: green;
+    }
+    th,td {
+        text-align: left;
+        border: 1px solid #ccc;
+        padding: 10px;
+    }
+    th {
+        background-color: #99C2C2;
+    }
+
+</style>
+    <script src="/store/js/endpoints.js"></script>
+</head>
+
+<body>
+<div class="container">
+    <div class="left-panel">
+        <div class="cbox">
+            <p>
+            <md-outlined-text-field label="Username" id="username"></md-outlined-text-field>
+            </p>
+            <p>
+            <md-outlined-text-field label="Password" id="password" type="password"></md-outlined-text-field>
+            </p>
+            <p><md-elevated-button onclick="loginAndGetToken()">Login</md-elevated-button><br></p>
+            <p><md-elevated-button onclick="getProducts()">Products</md-elevated-button></p>
+        </div>
+    </div>
+    <div class="right-panel">
+       <pre id="output"></pre>
+       <div id="table-container"></div>
+    </div>
+</div>
 </body>
 
 </html>
