@@ -10,3 +10,4 @@ spring:
         default_schema: dataexplorer1
 
 websiteUrl: http://localhost:8080
+env: development
