@@ -1,18 +1,29 @@
-<html lang="en" >
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/html" xmlns:th="http://www.thymeleaf.org">
 <head>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/icon?family=Material+Symbols+Outlined" rel="stylesheet">
     <link rel="icon" type="image/x-icon" href="/favicon.png">
-    <link rel="stylesheet" href="/store/css/light.css">
-    <link rel="stylesheet" type="text/css" href="/store/css/cba.css">
-    <script src="/store/js/bundle.js" type="module">
+
+
+    <link rel="stylesheet" th:href="@{{fileName}(fileName=${cssFileName1})}">
+    <link rel="stylesheet" th:href="@{{fileName}(fileName=${cssFileName2})}">
+
+
+
+
+    <script  type="module" th:src="@{{fileName}(fileName=${jsFileName1})}">
         import {styles as typescaleStyles} from '@material/web/typography/md-typescale-styles.js';
 
         document.adoptedStyleSheets.push(typescaleStyles.styleSheet);
     </script>
 
-
-
+    <script th:inline="javascript">
+        /*[+
+        var baseUrl = [[${baseUrl}]];
+        +]*/
+    </script>
+    <script th:src="@{{fileName}(fileName=${jsFileName2})}"></script>
 
 <style>
     :root {
@@ -39,7 +50,7 @@
     }
 
 </style>
-    <script src="/store/js/endpoints.js"></script>
+
 </head>
 
 <body class="light">

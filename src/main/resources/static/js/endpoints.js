@@ -1,4 +1,5 @@
-let baseUrl = '/store';
+// Global variable baseUrl is set by the controller and templated by Thymeleaf
+
 async function loginAndGetToken() {
     const outputElement = document.getElementById('output');
     if (!outputElement) {

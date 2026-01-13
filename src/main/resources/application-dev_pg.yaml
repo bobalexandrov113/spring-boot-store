@@ -11,3 +11,4 @@ spring:
 
 websiteUrl: http://localhost:8080
 env: development
+baseUrl:

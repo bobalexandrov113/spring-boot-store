@@ -9,7 +9,9 @@ spring:
       hibernate:
         default_schema: dataexplorer1
 
-websiteUrl: https://www.custom-built-apps.com
+websiteUrl: https://www.custom-built-apps.com/store
 server:
   port: 8080
   address: 0.0.0.0
+env: production
+baseUrl: /store

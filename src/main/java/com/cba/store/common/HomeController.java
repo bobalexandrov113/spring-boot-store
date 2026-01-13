@@ -8,21 +8,37 @@ import org.springframework.web.bind.annotation.GetMapping;
 @Controller
 public class HomeController {
     @Value("${env}")
-
     private String env;
+
+    @Value("${baseUrl}")
+    private String baseUrl;
 
     @GetMapping("/")
     public String home(Model model)
-        {
-            model.addAttribute("name", "Visitor");
-        if (env.equals("production")) {
-            return "index";
-        }
-        else if (env.equals("development")) {
-            return "index_dev";
-        }
+    {
+       String cssUrl = baseUrl + "/css/";
+       String jsUrl = baseUrl + "/js/";
+
+       String theme = "light";
+       String company = "cba";
+
+       String bundle = "bundle";
+       String endpoints = "endpoints";
+
+       //CSS files
+        model.addAttribute("cssFileName1", cssUrl + theme + ".css");
+        model.addAttribute("cssFileName2", cssUrl + company + ".css");
+
+        //Js files
+        model.addAttribute("jsFileName1", jsUrl + bundle + ".js");
+        model.addAttribute("jsFileName2", jsUrl +endpoints + ".js");
+
+        //Js variables
+        model.addAttribute("baseUrl", baseUrl);
+
+
         return "index";
-        }
+    }
 
 
 
