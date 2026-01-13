@@ -24,33 +24,7 @@
         +]*/
     </script>
     <script th:src="@{{fileName}(fileName=${jsFileName2})}"></script>
-
-<style>
-    :root {
-        --md-ref-typeface-brand: 'Open Sans';
-        --md-ref-typeface-plain: 'Open Sans';
-    }
-    md-elevated-button {
-        width: 200px;
-    }
-
-    table {
-        border-collapse: collapse;
-        width: 100%;
-        margin-top: 20px;
-        color: green;
-    }
-    th,td {
-        text-align: left;
-        border: 1px solid #ccc;
-        padding: 10px;
-    }
-    th {
-        background-color: #99C2C2;
-    }
-
-</style>
-
+    <title th:text="${pageTitle}"></title>
 </head>
 
 <body class="light">

@@ -36,7 +36,8 @@ public class HomeController {
         //Js variables
         model.addAttribute("baseUrl", baseUrl);
 
-
+        String pageTitle = "Store Application";
+        model.addAttribute("pageTitle", pageTitle);
         return "index";
     }
 
