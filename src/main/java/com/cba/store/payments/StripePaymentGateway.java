@@ -32,8 +32,7 @@ public class StripePaymentGateway implements PaymentGateway
         try {
             var builder = SessionCreateParams.builder()
                     .setMode(SessionCreateParams.Mode.PAYMENT)
-                    //.setSuccessUrl(websiteUrl + "/checkout-success?order_id=" + order.getId())
-                    .setSuccessUrl(websiteUrl + "/checklists")
+                    .setSuccessUrl(websiteUrl + "/checkout/paymentSuccess")
                     .setCancelUrl(websiteUrl)
                     .setPaymentIntentData(SessionCreateParams.PaymentIntentData.builder()
                             .putMetadata("order_id",order.getId().toString())
@@ -62,6 +61,7 @@ public class StripePaymentGateway implements PaymentGateway
             var signature = request.getHeaders().get("stripe-signature");
             var payload = request.getPayload();
             var event = Webhook.constructEvent(payload, signature, webhookSecretKey);
+            System.out.println("*****************  " + event.getType() + "********************");
             return switch (event.getType()) {
                 case "payment_intent.succeeded" -> Optional.of(new PaymentResult(extractOrderId(event), OrderStatus.PAID));
                 case "payment_intent.payment_failed" ->Optional.of(new PaymentResult(extractOrderId(event), OrderStatus.FAILED));

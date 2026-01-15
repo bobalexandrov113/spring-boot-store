@@ -17,11 +17,18 @@ import java.util.Map;
 
 @RequiredArgsConstructor
 
-public class CheckoutController {
+public class  CheckoutController {
     private final CheckoutService checkoutService;
     private final OrderRepository orderRepository;
 
-
+    @GetMapping("/paymentSuccess")
+    public String checkoutSuccess()
+    {
+        String html ="<body>";
+                html += "Order  payment has been success";
+                html += "</body>";
+        return html;
+    }
 
     @PostMapping
     public CheckoutResponse checkout(

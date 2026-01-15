@@ -3,6 +3,7 @@ package com.cba.store.payments;
 import com.cba.store.entities.Order;
 import com.cba.store.carts.CartEmptyException;
 import com.cba.store.carts.CartNotFoundException;
+import com.cba.store.entities.OrderStatus;
 import com.cba.store.orders.OrderRepository;
 
 import com.cba.store.auth.AuthService;
@@ -48,17 +49,16 @@ public class CheckoutService {
     public void handleWebhookEvent(WebhookRequest webhookRequest)
     {
              var result = paymentGateway.parseWebhookRequest(webhookRequest);
-
             result.ifPresent(paymentResult -> {
-             System.out.println(paymentResult.toString());
+             System.out.println(" ****************** " + paymentResult.toString() + "++++++++++++");
               var orderId = paymentResult.getOrderId();
               var order = orderRepository.findById(orderId).orElseThrow();
-              order.setStatus(paymentResult.getPaymentStatus());
+              order.setStatus(OrderStatus.PAID);
               orderRepository.save(order);
           });
             if (result.isEmpty())
             {
-                System.out.println("Got no result");
+                System.out.println("************* Got no result from webhook *************");
             }
 
 
