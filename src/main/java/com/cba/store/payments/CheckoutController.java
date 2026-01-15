@@ -21,11 +21,11 @@ public class  CheckoutController {
     private final CheckoutService checkoutService;
     private final OrderRepository orderRepository;
 
-    @GetMapping("/paymentSuccess")
-    public String checkoutSuccess()
+    @GetMapping("/paymentSuccess/{orderId}")
+    public String checkoutSuccess( @PathVariable("orderId") String orderId)
     {
         String html ="<body>";
-                html += "Order  payment has been success";
+                html += "Payment for the order " + orderId + " came through successfully";
                 html += "</body>";
         return html;
     }

@@ -53,7 +53,7 @@ public class CheckoutService {
              System.out.println(" ****************** " + paymentResult.toString() + "++++++++++++");
               var orderId = paymentResult.getOrderId();
               var order = orderRepository.findById(orderId).orElseThrow();
-              order.setStatus(OrderStatus.PAID);
+              order.setStatus(paymentResult.getPaymentStatus());
               orderRepository.save(order);
           });
             if (result.isEmpty())

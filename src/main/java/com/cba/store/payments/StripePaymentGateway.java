@@ -32,7 +32,7 @@ public class StripePaymentGateway implements PaymentGateway
         try {
             var builder = SessionCreateParams.builder()
                     .setMode(SessionCreateParams.Mode.PAYMENT)
-                    .setSuccessUrl(websiteUrl + "/checkout/paymentSuccess")
+                    .setSuccessUrl(websiteUrl + "/checkout/paymentSuccess/" + order.getId().toString())
                     .setCancelUrl(websiteUrl)
                     .setPaymentIntentData(SessionCreateParams.PaymentIntentData.builder()
                             .putMetadata("order_id",order.getId().toString())
