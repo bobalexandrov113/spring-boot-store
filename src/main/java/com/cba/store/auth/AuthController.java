@@ -5,6 +5,8 @@ import com.cba.store.users.UserRepository;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -15,7 +17,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/auth")
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class AuthController {
     private final AuthenticationManager authenticationManager;
     private final JwtService jwtService;
@@ -23,6 +25,8 @@ public class AuthController {
     private final UserMapper userMapper;
     private final JwtConfig jwtConfig;
 
+    @Value("${baseUrl}")
+    private String baseUrl;
 
     @PostMapping("/login")
     public ResponseEntity<JwtResponse> login(
@@ -38,7 +42,7 @@ public class AuthController {
        var refreshToken = jwtService.generateRefreshToken(user);
 
        var cookie = new Cookie("refreshToken", refreshToken.toString());
-       cookie.setPath("/auth/refresh");
+       cookie.setPath(baseUrl +"/auth/refresh");
        cookie.setHttpOnly(true);
        cookie.setMaxAge(jwtConfig.getRefreshTokenExpiration());
        cookie.setSecure(true);
