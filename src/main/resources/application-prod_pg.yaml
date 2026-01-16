@@ -10,8 +10,16 @@ spring:
         default_schema: dataexplorer1
 
 websiteUrl: https://www.custom-built-apps.com/store
+
+env: production
+baseUrl: /store
 server:
   port: 8080
   address: 0.0.0.0
-env: production
-baseUrl: /store
+  forward-headers-strategy: native
+  servlet:
+    context-path: ${baseUrl}
+
+springdoc:
+  swagger-ui:
+    url: ${websiteUrl}/swagger-ui/index.html
