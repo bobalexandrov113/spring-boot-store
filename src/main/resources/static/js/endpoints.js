@@ -121,7 +121,7 @@ async function getProtectedResource(protectedautUrl, bearerToken, method, CACHE_
 function createTable(data){
     //check whether we are dealing with an array
     if(!Array.isArray(data) || data.length == 0){
-        document.getElementById("table-container").innerHTML = "Failed to create table";
+        document.getElementById("data-container").innerHTML = "Failed to create table";
         return;
     }
     const headers = Object.keys(data[0]);
@@ -139,12 +139,35 @@ function createTable(data){
         html += "</tr>";
     });
     html += "</tbody></table>";
-    document.getElementById("table-container").innerHTML = html;
+    document.getElementById("data-container").innerHTML = html;
+}
+
+/*
+ResultSet should contain 2 items, id and text
+ */
+function createDropDownList(data, dropDownListId, containerId,){
+
+    if(!Array.isArray(data) || data.length == 0){
+        document.getElementById(containerId).innerHTML = "Failed to create a drop list";
+        return;
+    }
+    const headers = Object.keys(data[0]);
+    let html = "<md-outlined-select id="+dropDownListId +">\n";
+    data.forEach(row => {
+        html += "<md-select-option  value=\"" + row[headers[0]]+"," + row[headers[1]] + "\">\n";
+
+        html += "<div slot=\"headline\">" + row[headers[1]]+"</div>\n";
+        html +=  "</md-select-option>\n";
+    });
+
+  html += "</md-outlined-select>";
+  console.log(html);
+  document.getElementById(containerId).innerHTML = html;
 }
 
 async function getProducts(){
     const outputElement = document.getElementById('output');
-    const tableElement = document.getElementById('table-container');
+    const tableElement = document.getElementById('data-container');
     outputElement.innerHTML = '';
     tableElement.innerHTML = '';
     const bearerToken = await getToken();
@@ -154,7 +177,8 @@ async function getProducts(){
     const CACHE_KEY = 'apiProductsCache';
     try{
         const data = await getProtectedResource(protectedApiUrl, bearerToken, method, CACHE_KEY);
-        createTable(data);
+        //createTable(data);
+        createDropDownList(data, 'productsSelect','data-container');
         outputElement.innerHTML = '<h2>Products</h2>';
     }
     catch(error){
