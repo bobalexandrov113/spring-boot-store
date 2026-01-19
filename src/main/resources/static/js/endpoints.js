@@ -193,7 +193,29 @@ async function getProducts(){
     const CACHE_KEY = 'apiProductsCache';
     try{
         const data = await getProtectedResource(protectedApiUrl, bearerToken, method, CACHE_KEY);
-        //createTable(data);
+         createTable(data);
+        //createDropDownList(data, 'productsSelect','data-container');
+        outputElement.innerHTML = '<h2>Products</h2>';
+    }
+    catch(error){
+        console.error(error);
+        outputElement.innerHTML = error;
+    }
+}
+
+async function getProductsInList(){
+    const outputElement = document.getElementById('output');
+    const tableElement = document.getElementById('data-container');
+    outputElement.innerHTML = '';
+    tableElement.innerHTML = '';
+    const bearerToken = await getToken();
+    outputElement.innerHTML = 'fetching products...';
+    const protectedApiUrl = baseUrl + "/products";
+    const method = 'GET';
+    const CACHE_KEY = 'apiProductsCache';
+    try{
+        const data = await getProtectedResource(protectedApiUrl, bearerToken, method, CACHE_KEY);
+
         createDropDownList(data, 'productsSelect','data-container');
         outputElement.innerHTML = '<h2>Products</h2>';
     }
@@ -201,4 +223,11 @@ async function getProducts(){
         console.error(error);
         outputElement.innerHTML = error;
     }
+}
+
+async function getShoppingPage  (){
+    const outputElement = document.getElementById('output');
+    const tableElement = document.getElementById('data-container');
+    await getProductsInList();
+
 }
