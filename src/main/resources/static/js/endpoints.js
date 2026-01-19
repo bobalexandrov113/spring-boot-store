@@ -152,17 +152,33 @@ function createDropDownList(data, dropDownListId, containerId,){
         return;
     }
     const headers = Object.keys(data[0]);
-    let html = "<md-outlined-select id="+dropDownListId +">\n";
-    data.forEach(row => {
-        html += "<md-select-option  value=\"" + row[headers[0]]+"," + row[headers[1]] + "\">\n";
 
-        html += "<div slot=\"headline\">" + row[headers[1]]+"</div>\n";
-        html +=  "</md-select-option>\n";
+    const container = document.getElementById(containerId);
+    const dropDownList = document.createElement("md-outlined-select");
+    dropDownList.id = dropDownListId;
+
+    data.forEach(row => {
+        const option = document.createElement("md-select-option");
+        option.value = row[headers[0]] + "," + row[headers[1]];
+        option.textContent = row[headers[1]];
+        dropDownList.appendChild(option);
     });
 
-  html += "</md-outlined-select>";
-  console.log(html);
-  document.getElementById(containerId).innerHTML = html;
+    const handleSelectionChange = (event) => {
+        const selectedValue = event.target.value;
+        const outputElement = document.getElementById('output');
+        if (selectedValue){
+            outputElement.textContent = selectedValue;
+            console.log(selectedValue);
+        }else {
+            outputElement.textContent = "None";
+            console.log("selection cleared.");
+        }
+    };
+    dropDownList.addEventListener("change", handleSelectionChange);
+
+    container.appendChild(dropDownList);
+
 }
 
 async function getProducts(){
