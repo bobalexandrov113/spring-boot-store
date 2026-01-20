@@ -145,7 +145,7 @@ function createTable(data){
 /*
 ResultSet should contain 2 items, id and text
  */
-function createDropDownList(data, dropDownListId, containerId,){
+function createDropDownList(data, dropDownListId, containerId, outputElementId){
 
     if(!Array.isArray(data) || data.length == 0){
         document.getElementById(containerId).innerHTML = "Failed to create a drop list";
@@ -179,6 +179,8 @@ function createDropDownList(data, dropDownListId, containerId,){
 
     container.appendChild(dropDownList);
 
+
+
 }
 
 async function getProducts(){
@@ -203,9 +205,8 @@ async function getProducts(){
     }
 }
 
-async function getProductsInList(){
-    const outputElement = document.getElementById('output');
-    const tableElement = document.getElementById('data-container');
+async function getProductsInList(outputElement, tableElement){
+
     outputElement.innerHTML = '';
     tableElement.innerHTML = '';
     const bearerToken = await getToken();
@@ -228,6 +229,34 @@ async function getProductsInList(){
 async function getShoppingPage  (){
     const outputElement = document.getElementById('output');
     const tableElement = document.getElementById('data-container');
-    await getProductsInList();
+    tableElement.innerHTML = '';
+    outputElement.innerHTML = '';
+
+    const container = document.createElement('div');
+    container.classList.add('container');
+    tableElement.appendChild(container);
+
+   const leftDiv = document.createElement('div');
+   leftDiv.id = 'lp';
+   leftDiv.classList.add('left-panel');
+   container.appendChild(leftDiv);
+
+    const rightDiv = document.createElement('div');
+    rightDiv.id = 'rp';
+    rightDiv.classList.add('right-panel');
+    rightDiv.textContent = 'new Item';
+    await getProductsInList(leftDiv, rightDiv );
+
+    const  dropDownList = document.getElementById('productsSelect');
+    rightDiv.appendChild(dropDownList);
+
+    container.appendChild(rightDiv);
+    
+    
+
+
+
+
+
 
 }
