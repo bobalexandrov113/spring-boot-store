@@ -361,6 +361,26 @@ async function addItemToCart()
     const cartField = document.getElementById('cartField');
 
 
+    if(numCartItems == 0)
+    {
+        //create a new cart, store the values in the session storage
+        const cartApiUrl = baseUrl + "/carts";
+        const method = 'POST';
+        const dataResponse = await fetch(cartApiUrl,{
+            method: method,
+        });
+        if(dataResponse.status === 201)
+        {
+            const data = await dataResponse.json();
+            sessionStorage.setItem('CART_ID', data['id']);
+            console.log(data['id']);
+        }
+
+    }
+
+
+
+
 
     cartListItem = document.createElement('md-list-item');
     cartListItem.id = productId;
@@ -370,4 +390,25 @@ async function addItemToCart()
     numCartItems++;
     cartField.value = "items: " + numCartItems;
     console.log(" async function value of " + productId);
+}
+
+async function postData(url, data){
+    try{
+        const dataResponse = await fetch(cartApiUrl,{
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(data),
+        });
+        if(dataResponse.ok)
+        {
+            const data = await dataResponse.json();
+            console.log(data);
+            return data;
+        }
+
+    }catch(error){
+        console.error('Post data error:',error);
+    }
 }
