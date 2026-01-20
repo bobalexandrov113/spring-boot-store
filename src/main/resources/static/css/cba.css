@@ -30,10 +30,13 @@
 }
 md-elevated-button {
     width: 200px;
+    margin-left: 8px;
 }
 md-outlined-text-field {
     margin-bottom: 16px;
     margin-left: 8px;
+    margin-top: 8px;
+    margin-right: 8px;
 }
 table {
     border-collapse: collapse;

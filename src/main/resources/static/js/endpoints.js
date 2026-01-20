@@ -1,4 +1,5 @@
 // Global variable baseUrl is set by the controller and templated by Thymeleaf
+let numCartItems = 0;
 
 async function loginAndGetToken() {
     const outputElement = document.getElementById('output');
@@ -220,7 +221,7 @@ async function getShoppingPage  (){
    const leftDiv = document.createElement('div');
 
     leftDiv.id = 'lp';
-    leftDiv.classList.add('left-panel');
+    // leftDiv.classList.add('left-panel');
     await getProductsInList(leftDiv );
     const  dropDownList = document.getElementById('productsSelect');
     leftDiv.appendChild(dropDownList);
@@ -228,7 +229,7 @@ async function getShoppingPage  (){
 
     const rightDiv = document.createElement('div');
     rightDiv.id = 'rp';
-    rightDiv.classList.add('right-panel');
+    // rightDiv.classList.add('right-panel');
 
     const productField = document.createElement('md-outlined-text-field');
     productField.id='product_name';
@@ -250,8 +251,57 @@ async function getShoppingPage  (){
     productDescriptionField.rows='10';
     productDescriptionField.resize='vertical';
     rightDiv.appendChild(productDescriptionField);
+
+    const addItemButton = document.createElement('md-elevated-button');
+    addItemButton.id = 'addItemButton';
+
+    const  handleClickCart = async(event) => {
+            await addItemToCart();
+            console.log("Click on Item Button");
+    };
+
+    addItemButton.addEventListener('click', handleClickCart);
+    addItemButton.textContent = 'Add Item';
+
+    rightDiv.appendChild(addItemButton);
+
     container.appendChild(rightDiv);
 
+
+
+    const cartDiv = document.createElement('div');
+    cartDiv.id = 'cartDiv';
+    cartDiv.classList.add('cbox');
+
+    const cartField = document.createElement('md-outlined-text-field');
+    cartField.id='cartField';
+    cartField.label="cart";
+    cartField.value = 'no items in cart';
+
+
+
+    cartDiv.appendChild(cartField);
+
+
+
+    const cartItemList = document.createElement('md-list');
+    cartItemList.id = 'cartItemList';
+
+    cartListItem1 = document.createElement('md-list-item');
+    cartListItem1.textContent = 'Items';
+    cartItemList.appendChild(cartListItem1);
+    divider = document.createElement('md-divider');
+    cartItemList.appendChild(divider);
+
+    // cartListItem2 = document.createElement('md-list-item');
+    // cartListItem2.textContent = 'Toothbrush';
+    // cartItemList.appendChild(cartListItem2);
+
+
+    cartDiv.appendChild(cartItemList);
+
+
+    container.appendChild(cartDiv);
 
 
 }
@@ -302,4 +352,22 @@ async function getProduct( productId){
         productPrice.value = 'error';
         product.value= 'error';
     }
+}
+
+async function addItemToCart()
+{
+    const productId = document.getElementById('productsSelect').value;
+    const cartItemList = document.getElementById('cartItemList');
+    const cartField = document.getElementById('cartField');
+
+
+
+    cartListItem = document.createElement('md-list-item');
+    cartListItem.id = productId;
+    cartListItem.textContent = "product " + productId;
+    cartItemList.appendChild(cartListItem);
+
+    numCartItems++;
+    cartField.value = "items: " + numCartItems;
+    console.log(" async function value of " + productId);
 }
