@@ -31,7 +31,10 @@
 md-elevated-button {
     width: 200px;
 }
-
+md-outlined-text-field {
+    margin-bottom: 16px;
+    margin-left: 8px;
+}
 table {
     border-collapse: collapse;
     width: 100%;

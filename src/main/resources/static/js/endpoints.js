@@ -148,7 +148,7 @@ function createTable(data){
 /*
 ResultSet should contain 2 items, id and text
  */
-function createDropDownList(data, dropDownListId, containerId, outputElement){
+function createDropDownList(data, dropDownListId, containerId){
 
     if(!Array.isArray(data) || data.length == 0){
         document.getElementById(containerId).innerHTML = "Failed to create a drop list";
@@ -162,25 +162,95 @@ function createDropDownList(data, dropDownListId, containerId, outputElement){
 
     data.forEach(row => {
         const option = document.createElement("md-select-option");
-        option.value = row[headers[0]] + "," + row[headers[1]];
+        option.value = row[headers[0]];
         option.textContent = row[headers[1]];
         dropDownList.appendChild(option);
     });
 
-    const handleSelectionChange = (event) => {
+    const  handleSelectionChange = async(event) => {
         const selectedValue = event.target.value;
 
         if (selectedValue){
-            outputElement.value = selectedValue;
+            await getProduct(selectedValue);
             console.log(selectedValue);
         }else {
-            outputElement.textContent = "None";
+
             console.log("selection cleared.");
         }
     };
     dropDownList.addEventListener("change", handleSelectionChange);
 
     container.appendChild(dropDownList);
+
+
+
+}
+
+
+
+async function getProductsInList( container){
+
+    container.innerHTML = '';
+    const bearerToken = await getToken();
+    const protectedApiUrl = baseUrl + "/products";
+    const method = 'GET';
+    const CACHE_KEY = 'apiProductsCache';
+    try{
+        const data = await getProtectedResource(protectedApiUrl, bearerToken, method, CACHE_KEY);
+
+        createDropDownList(data, 'productsSelect','data-container');
+
+    }
+    catch(error){
+        console.error(error);
+        container.innerHTML = error;
+    }
+}
+
+async function getShoppingPage  (){
+
+    const tableElement = document.getElementById('data-container');
+    tableElement.innerHTML = '';
+
+
+    const container = document.createElement('div');
+    container.classList.add('container');
+    tableElement.appendChild(container);
+
+   const leftDiv = document.createElement('div');
+
+    leftDiv.id = 'lp';
+    leftDiv.classList.add('left-panel');
+    await getProductsInList(leftDiv );
+    const  dropDownList = document.getElementById('productsSelect');
+    leftDiv.appendChild(dropDownList);
+    container.appendChild(leftDiv);
+
+    const rightDiv = document.createElement('div');
+    rightDiv.id = 'rp';
+    rightDiv.classList.add('right-panel');
+
+    const productField = document.createElement('md-outlined-text-field');
+    productField.id='product_name';
+    productField.label="product";
+
+    rightDiv.appendChild(productField);
+    container.appendChild(rightDiv);
+
+    const productPriceField = document.createElement('md-outlined-text-field');
+    productPriceField.id='product_price';
+    productPriceField.label="product price";
+    rightDiv.appendChild(productPriceField);
+    container.appendChild(rightDiv);
+
+    const productDescriptionField = document.createElement('md-outlined-text-field');
+    productDescriptionField.id='product_description';
+    productDescriptionField.label="product description";
+    productDescriptionField.type="textarea";
+    productDescriptionField.rows='10';
+    productDescriptionField.resize='vertical';
+    rightDiv.appendChild(productDescriptionField);
+    container.appendChild(rightDiv);
 
 
 
@@ -198,7 +268,7 @@ async function getProducts(){
     const CACHE_KEY = 'apiProductsCache';
     try{
         const data = await getProtectedResource(protectedApiUrl, bearerToken, method, CACHE_KEY);
-         createTable(data);
+        createTable(data);
         //createDropDownList(data, 'productsSelect','data-container');
         outputElement.innerHTML = '<h2>Products</h2>';
     }
@@ -208,61 +278,28 @@ async function getProducts(){
     }
 }
 
-async function getProductsInList(outputElement, tableElement){
+async function getProduct( productId){
+    const product = document.getElementById('product_name');
+    const productDescription = document.getElementById('product_description');
+    const productPrice = document.getElementById('product_price');
 
-    outputElement.innerHTML = '';
-    tableElement.innerHTML = '';
+
     const bearerToken = await getToken();
-    outputElement.innerHTML = 'fetching products...';
-    const protectedApiUrl = baseUrl + "/products";
+    const protectedApiUrl = baseUrl + "/products/" + productId;
     const method = 'GET';
-    const CACHE_KEY = 'apiProductsCache';
+    const CACHE_KEY = 'apiProductCache' + productId;
     try{
         const data = await getProtectedResource(protectedApiUrl, bearerToken, method, CACHE_KEY);
+        product.value = data['name'];
+        productDescription.value = data['description'];
+        productPrice.value = data['price'];
+        console.log(data);
 
-        createDropDownList(data, 'productsSelect','data-container',outputElement);
-        outputElement.innerHTML = '<h2>Products</h2>';
     }
     catch(error){
         console.error(error);
-        outputElement.innerHTML = error;
+        productDescription.value = error;
+        productPrice.value = 'error';
+        product.value= 'error';
     }
-}
-
-async function getShoppingPage  (){
-
-    const tableElement = document.getElementById('data-container');
-    tableElement.innerHTML = '';
-
-
-    const container = document.createElement('div');
-    container.classList.add('container');
-    tableElement.appendChild(container);
-
-   const leftDiv = document.createElement('div');
-   leftDiv.id = 'lp';
-   leftDiv.classList.add('left-panel');
-   const outputElement = document.createElement('md-outlined-text-field');
-   outputElement.id='output_data';
-   outputElement.label="product";
-   outputElement.textContent = 'new Item';
-   leftDiv.appendChild(outputElement);
-   container.appendChild(leftDiv);
-
-    const rightDiv = document.createElement('div');
-    rightDiv.id = 'rp';
-    rightDiv.classList.add('right-panel');
-    await getProductsInList(outputElement, rightDiv );
-    const  dropDownList = document.getElementById('productsSelect');
-    rightDiv.appendChild(dropDownList);
-
-    container.appendChild(rightDiv);
-    
-    
-
-
-
-
-
-
 }
