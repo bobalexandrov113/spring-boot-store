@@ -5,8 +5,11 @@ async function loginAndGetToken() {
     if (!outputElement) {
         throw new Error("No output element found");
     }
-    const username = document.getElementById('username').value;
-    const password = document.getElementById('password').value;
+    // const username = document.getElementById('username').value;
+    // const password = document.getElementById('password').value;
+
+    const username = 'boris.alexandrov@hotmail.ca';
+    const password = '456789';
 
     const tokenUrl = baseUrl + "/auth/login";
 
@@ -145,7 +148,7 @@ function createTable(data){
 /*
 ResultSet should contain 2 items, id and text
  */
-function createDropDownList(data, dropDownListId, containerId, outputElementId){
+function createDropDownList(data, dropDownListId, containerId, outputElement){
 
     if(!Array.isArray(data) || data.length == 0){
         document.getElementById(containerId).innerHTML = "Failed to create a drop list";
@@ -166,9 +169,9 @@ function createDropDownList(data, dropDownListId, containerId, outputElementId){
 
     const handleSelectionChange = (event) => {
         const selectedValue = event.target.value;
-        const outputElement = document.getElementById('output');
+
         if (selectedValue){
-            outputElement.textContent = selectedValue;
+            outputElement.value = selectedValue;
             console.log(selectedValue);
         }else {
             outputElement.textContent = "None";
@@ -217,7 +220,7 @@ async function getProductsInList(outputElement, tableElement){
     try{
         const data = await getProtectedResource(protectedApiUrl, bearerToken, method, CACHE_KEY);
 
-        createDropDownList(data, 'productsSelect','data-container');
+        createDropDownList(data, 'productsSelect','data-container',outputElement);
         outputElement.innerHTML = '<h2>Products</h2>';
     }
     catch(error){
@@ -227,10 +230,10 @@ async function getProductsInList(outputElement, tableElement){
 }
 
 async function getShoppingPage  (){
-    const outputElement = document.getElementById('output');
+
     const tableElement = document.getElementById('data-container');
     tableElement.innerHTML = '';
-    outputElement.innerHTML = '';
+
 
     const container = document.createElement('div');
     container.classList.add('container');
@@ -239,14 +242,17 @@ async function getShoppingPage  (){
    const leftDiv = document.createElement('div');
    leftDiv.id = 'lp';
    leftDiv.classList.add('left-panel');
+   const outputElement = document.createElement('md-outlined-text-field');
+   outputElement.id='output_data';
+   outputElement.label="product";
+   outputElement.textContent = 'new Item';
+   leftDiv.appendChild(outputElement);
    container.appendChild(leftDiv);
 
     const rightDiv = document.createElement('div');
     rightDiv.id = 'rp';
     rightDiv.classList.add('right-panel');
-    rightDiv.textContent = 'new Item';
-    await getProductsInList(leftDiv, rightDiv );
-
+    await getProductsInList(outputElement, rightDiv );
     const  dropDownList = document.getElementById('productsSelect');
     rightDiv.appendChild(dropDownList);
 
