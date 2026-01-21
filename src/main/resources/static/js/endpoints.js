@@ -365,41 +365,85 @@ async function addItemToCart()
     {
         //create a new cart, store the values in the session storage
         const cartApiUrl = baseUrl + "/carts";
-        const method = 'POST';
-        const dataResponse = await fetch(cartApiUrl,{
-            method: method,
-        });
-        if(dataResponse.status === 201)
-        {
-            const data = await dataResponse.json();
-            sessionStorage.setItem('CART_ID', data['id']);
-            console.log(data['id']);
-        }
+        let dummydata = 'nonsense';
+
+        const data = await postData(cartApiUrl, dummydata);
+        sessionStorage.setItem('CART_ID', data['id']);
+        console.log(data['id']);
+
+    }
+    const cartId = sessionStorage.getItem('CART_ID');
+    const url =  baseUrl + "/carts/" + cartId + "/items";
+    const productInfo = { productId:productId };
+    const dumdum = await postData(url, productInfo);
+    if(dumdum)
+    {
+       console.log(dumdum);
+       const cartUrl =  baseUrl + "/carts/" + cartId;
+       const data = await getData(cartUrl);
+
+       cartField.value = "Total: " + data.totalPrice;
+       cartItemList.innerHTML = '';
+       // add header
+        const cartListHeader = document.createElement('md-list-item');
+
+        cartListHeader.textContent = "Cart items";
+        cartItemList.appendChild(cartListHeader);
+        //add divider
+        divider = document.createElement('md-divider');
+        cartItemList.appendChild(divider);
+
+
+       const items = data.items;
+       items.forEach(item => {
+           const record = item.product.name + ":" + item.quantity;
+           console.log(record);
+           const cartListItem = document.createElement('md-list-item');
+           cartListItem.id = productId;
+           cartListItem.textContent = record;
+           cartItemList.appendChild(cartListItem);
+       })
+
 
     }
 
 
 
 
-
-    cartListItem = document.createElement('md-list-item');
-    cartListItem.id = productId;
-    cartListItem.textContent = "product " + productId;
-    cartItemList.appendChild(cartListItem);
-
     numCartItems++;
-    cartField.value = "items: " + numCartItems;
+    //cartField.value = "items: " + numCartItems;
     console.log(" async function value of " + productId);
 }
 
 async function postData(url, data){
     try{
-        const dataResponse = await fetch(cartApiUrl,{
+        const dataResponse = await fetch(url,{
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify(data),
+        });
+        if(dataResponse.ok)
+        {
+            const data = await dataResponse.json();
+            console.log(data);
+            return data;
+        }
+
+    }catch(error){
+        console.error('Post data error:',error);
+    }
+}
+
+async function getData(url){
+    try{
+        const dataResponse = await fetch(url,{
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+
         });
         if(dataResponse.ok)
         {
