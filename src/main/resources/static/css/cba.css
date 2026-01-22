@@ -2,6 +2,20 @@
     display: flex;
     gap: 0;
 }
+.distributed-stack {
+        display: flex;
+        flex-direction: column;
+        height: 300px;
+        justify-content: space-between; /* Puts space between items */
+        border: 1px solid #333
+}
+
+.item {
+    flex: 1; /* Each item takes equal vertical space */
+    /* Or for centering */
+    /* align-items: center; */
+    /* justify-content: center; */
+}
 
 .left-panel {
     width: 300px;

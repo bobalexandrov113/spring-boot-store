@@ -213,7 +213,7 @@ async function getShoppingPage  (){
    const leftDiv = document.createElement('div');
 
     leftDiv.id = 'lp';
-    // leftDiv.classList.add('left-panel');
+
     await getProductsInList(leftDiv );
     const  dropDownList = document.getElementById('productsSelect');
     leftDiv.appendChild(dropDownList);
@@ -221,20 +221,28 @@ async function getShoppingPage  (){
 
     const rightDiv = document.createElement('div');
     rightDiv.id = 'rp';
-    // rightDiv.classList.add('right-panel');
 
+    const verticalContainer = document.createElement('div');
+    verticalContainer.classList.add('distibuted-stack');
+
+    const firstRow = document.createElement('div');
     const productField = document.createElement('md-outlined-text-field');
     productField.id='product_name';
     productField.label="product";
 
-    rightDiv.appendChild(productField);
-    container.appendChild(rightDiv);
+    firstRow.appendChild(productField);
+
+
 
     const productPriceField = document.createElement('md-outlined-text-field');
     productPriceField.id='product_price';
     productPriceField.label="product price";
-    rightDiv.appendChild(productPriceField);
-    container.appendChild(rightDiv);
+    firstRow.appendChild(productPriceField);
+    verticalContainer.appendChild(firstRow);
+    rightDiv.appendChild(verticalContainer);
+
+
+    const secondRow = document.createElement('div');
 
     const productDescriptionField = document.createElement('md-outlined-text-field');
     productDescriptionField.id='product_description';
@@ -242,10 +250,12 @@ async function getShoppingPage  (){
     productDescriptionField.type="textarea";
     productDescriptionField.rows='10';
     productDescriptionField.resize='vertical';
-    rightDiv.appendChild(productDescriptionField);
+    secondRow.appendChild(productDescriptionField);
 
     const addItemButton = document.createElement('md-elevated-button');
     addItemButton.id = 'addItemButton';
+
+
 
     const  handleClickCartButton = async(event) => {
             await addItemToCart();
@@ -255,7 +265,10 @@ async function getShoppingPage  (){
     addItemButton.addEventListener('click', handleClickCartButton);
     addItemButton.textContent = 'Add Item';
 
-    rightDiv.appendChild(addItemButton);
+    secondRow.appendChild(addItemButton);
+    verticalContainer.appendChild(secondRow);
+
+    rightDiv.appendChild(verticalContainer);
 
     container.appendChild(rightDiv);
 
