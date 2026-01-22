@@ -35,7 +35,7 @@ async function loginAndGetToken() {
 
     }
     catch(error){
-        console.log(error);
+        // console.log(error);
         outputElement.innerHTML = error;
     }
 }
@@ -55,7 +55,7 @@ async function refreshToken() {
         });
     }
     catch(error){
-        console.log(error);
+        // console.log(error);
     }
     if(!refreshResponse.ok)
     {
@@ -64,7 +64,7 @@ async function refreshToken() {
     const authResponse = await refreshToken.json();
     const bearerToken = authResponse.token;
     outputElement.innerHTML = "refreshed token successfully.";
-    console.log(bearerToken);
+    // console.log(bearerToken);
     sessionStorage.setItem('jwtToken', bearerToken);
 }
 
@@ -82,15 +82,15 @@ async function getToken(){
     let expiryDate = JSON.parse(atob(bearerToken.split('.')[1])).exp*1000;
     const isTokenExpired = Date.now() > expiryDate;
     if(isTokenExpired){
-        console.log("Token expired.");
+        // console.log("Token expired.");
         await refreshToken();
     }
     else {
-        console.log(bearerToken);
+        // console.log(bearerToken);
         return bearerToken;
     }
     const bearerToken1 = sessionStorage.getItem('jwtToken');
-    console.log(bearerToken1);
+    // console.log(bearerToken1);
     return bearerToken1;
 }
 
@@ -99,7 +99,7 @@ async function getProtectedResource(protectedautUrl, bearerToken, method, CACHE_
     const cachedData = sessionStorage.getItem(CACHE_KEY);
     if(cachedData)
     {
-        console.log("Using cached data");
+        // console.log("Using cached data");
         return JSON.parse(cachedData);
     }
     else
@@ -170,10 +170,10 @@ function createDropDownList(data, dropDownListId, containerId){
 
         if (selectedValue){
             await getProduct(selectedValue);
-            console.log(selectedValue);
+            // console.log(selectedValue);
         }else {
 
-            console.log("selection cleared.");
+            // console.log("selection cleared.");
         }
     };
     dropDownList.addEventListener("change", handleSelectionChange);
@@ -249,7 +249,7 @@ async function getShoppingPage  (){
 
     const  handleClickCartButton = async(event) => {
             await addItemToCart();
-            console.log("Click on Item Button");
+            // console.log("Click on Item Button");
     };
 
     addItemButton.addEventListener('click', handleClickCartButton);
@@ -335,7 +335,7 @@ async function getProduct( productId){
         product.value = data['name'];
         productDescription.value = data['description'];
         productPrice.value = data['price'];
-        console.log(data);
+        // console.log(data);
 
     }
     catch(error){
@@ -360,7 +360,7 @@ async function addItemToCart(){
 
         const data = await postData(cartApiUrl, dummydata);
         sessionStorage.setItem('CART_ID', data['id']);
-        console.log(data['id']);
+        // console.log(data['id']);
 
     }
     const cartId = sessionStorage.getItem('CART_ID');
@@ -369,63 +369,22 @@ async function addItemToCart(){
     const dumdum = await postData(url, productInfo);
     if(dumdum)
     {
-       console.log(dumdum);
-       const cartUrl =  baseUrl + "/carts/" + cartId;
-       const data = await getData(cartUrl);
-
-       console.log("***********  cart data returned for " + data.id);
-       cartField.value = "Total: " + data.totalPrice;
-       cartItemList.innerHTML = '';
-       // add header
-        const cartListHeader = document.createElement('md-list-item');
-
-        cartListHeader.textContent = "Cart items";
-        cartItemList.appendChild(cartListHeader);
-        //add divider
-        divider = document.createElement('md-divider');
-        cartItemList.appendChild(divider);
-
-        const  handleClickCartList = async(event) => {
-            const item = event.target;
-            if(item)
-            {
-                const productId = item.id;
-                removeItemFromCart(productId);
-                console.log("removing product id ....  " + productId);
-
-
-            }
-            else
-            {
-                console.log("failed to get the item from cart");
-            }
-            console.log("Click on the cart list");
-        };
-
-       const items = data.items;
-       items.forEach(item => {
-           const record = item.product.name + ":" + item.quantity;
-           console.log(record);
-           const cartListItem = document.createElement('md-list-item');
-           cartListItem.id = item.product.id;
-           cartListItem.textContent = record;
-           cartListItem.addEventListener('click', handleClickCartList);
-           cartItemList.appendChild(cartListItem);
-       })
-
+        await populateCartList(cartItemList, cartField)
 
     }
-
-
-
-
     numCartItems++;
-    //cartField.value = "items: " + numCartItems;
-    //console.log(" async function value of " + productId);
+
 }
 
 async function removeItemFromCart(productId){
-        console.log("removing " + productId);
+    console.log("removing " + productId);
+    const cartId = sessionStorage.getItem('CART_ID');
+    const url =  baseUrl + "/carts/" + cartId + "/items/" + productId;
+    await deleteData(url);
+    const cartItemList = document.getElementById('cartItemList');
+    const cartField = document.getElementById('cartField');
+
+    await populateCartList(cartItemList, cartField);
 
 }
 
@@ -441,7 +400,7 @@ async function postData(url, data){
         if(dataResponse.ok)
         {
             const data = await dataResponse.json();
-            console.log(data);
+            // console.log(data);
             return data;
         }
 
@@ -462,11 +421,76 @@ async function getData(url){
         if(dataResponse.ok)
         {
             const data = await dataResponse.json();
-            console.log(data);
+            // console.log(data);
             return data;
         }
 
     }catch(error){
         console.error('Post data error:',error);
     }
+}
+
+async function deleteData(url){
+    try{
+        const dataResponse = await fetch(url,{
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        });
+    }catch(error){
+        console.error('Delete data error:',error);
+    }
+}
+
+async function populateCartList(cartItemList, cartField){
+
+    const cartId = sessionStorage.getItem('CART_ID');
+    const cartUrl =  baseUrl + "/carts/" + cartId;
+    cartField.value = '';
+    cartItemList.innerHTML = '';
+
+    const data = await getData(cartUrl);
+
+    // console.log("***********  cart data returned for " + data.id);
+    cartField.value = "Total: " + data.totalPrice;
+    cartItemList.innerHTML = '';
+    // add header
+    const cartListHeader = document.createElement('md-list-item');
+
+    cartListHeader.textContent = "Cart items";
+    cartItemList.appendChild(cartListHeader);
+    //add divider
+    divider = document.createElement('md-divider');
+    cartItemList.appendChild(divider);
+
+    const  handleClickCartList = async(event) => {
+        const item = event.target;
+        if(item)
+        {
+            const productId = item.id;
+            removeItemFromCart(productId);
+            // console.log("removing product id ....  " + productId);
+
+
+        }
+        else
+        {
+            // console.log("failed to get the item from cart");
+        }
+        // console.log("Click on the cart list");
+    };
+
+    const items = data.items;
+
+    items.forEach(item => {
+        const record = item.product.name + ":" + item.quantity;
+        // // console.log(record);
+        const cartListItem = document.createElement('md-list-item');
+        cartListItem.id = item.product.id;
+        cartListItem.textContent = record;
+        cartListItem.addEventListener('click', handleClickCartList);
+        cartItemList.appendChild(cartListItem);
+    })
+
 }
