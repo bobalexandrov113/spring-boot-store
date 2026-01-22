@@ -146,9 +146,6 @@ function createTable(data){
     document.getElementById("data-container").innerHTML = html;
 }
 
-/*
-ResultSet should contain 2 items, id and text
- */
 function createDropDownList(data, dropDownListId, containerId){
 
     if(!Array.isArray(data) || data.length == 0){
@@ -182,12 +179,7 @@ function createDropDownList(data, dropDownListId, containerId){
     dropDownList.addEventListener("change", handleSelectionChange);
 
     container.appendChild(dropDownList);
-
-
-
 }
-
-
 
 async function getProductsInList( container){
 
@@ -255,12 +247,12 @@ async function getShoppingPage  (){
     const addItemButton = document.createElement('md-elevated-button');
     addItemButton.id = 'addItemButton';
 
-    const  handleClickCart = async(event) => {
+    const  handleClickCartButton = async(event) => {
             await addItemToCart();
             console.log("Click on Item Button");
     };
 
-    addItemButton.addEventListener('click', handleClickCart);
+    addItemButton.addEventListener('click', handleClickCartButton);
     addItemButton.textContent = 'Add Item';
 
     rightDiv.appendChild(addItemButton);
@@ -285,6 +277,13 @@ async function getShoppingPage  (){
 
 
     const cartItemList = document.createElement('md-list');
+
+
+
+
+
+
+
     cartItemList.id = 'cartItemList';
 
     cartListItem1 = document.createElement('md-list-item');
@@ -293,14 +292,7 @@ async function getShoppingPage  (){
     divider = document.createElement('md-divider');
     cartItemList.appendChild(divider);
 
-    // cartListItem2 = document.createElement('md-list-item');
-    // cartListItem2.textContent = 'Toothbrush';
-    // cartItemList.appendChild(cartListItem2);
-
-
     cartDiv.appendChild(cartItemList);
-
-
     container.appendChild(cartDiv);
 
 
@@ -354,8 +346,7 @@ async function getProduct( productId){
     }
 }
 
-async function addItemToCart()
-{
+async function addItemToCart(){
     const productId = document.getElementById('productsSelect').value;
     const cartItemList = document.getElementById('cartItemList');
     const cartField = document.getElementById('cartField');
@@ -382,6 +373,7 @@ async function addItemToCart()
        const cartUrl =  baseUrl + "/carts/" + cartId;
        const data = await getData(cartUrl);
 
+       console.log("***********  cart data returned for " + data.id);
        cartField.value = "Total: " + data.totalPrice;
        cartItemList.innerHTML = '';
        // add header
@@ -393,14 +385,31 @@ async function addItemToCart()
         divider = document.createElement('md-divider');
         cartItemList.appendChild(divider);
 
+        const  handleClickCartList = async(event) => {
+            const item = event.target;
+            if(item)
+            {
+                const productId = item.id;
+                removeItemFromCart(productId);
+                console.log("removing product id ....  " + productId);
+
+
+            }
+            else
+            {
+                console.log("failed to get the item from cart");
+            }
+            console.log("Click on the cart list");
+        };
 
        const items = data.items;
        items.forEach(item => {
            const record = item.product.name + ":" + item.quantity;
            console.log(record);
            const cartListItem = document.createElement('md-list-item');
-           cartListItem.id = productId;
+           cartListItem.id = item.product.id;
            cartListItem.textContent = record;
+           cartListItem.addEventListener('click', handleClickCartList);
            cartItemList.appendChild(cartListItem);
        })
 
@@ -412,7 +421,12 @@ async function addItemToCart()
 
     numCartItems++;
     //cartField.value = "items: " + numCartItems;
-    console.log(" async function value of " + productId);
+    //console.log(" async function value of " + productId);
+}
+
+async function removeItemFromCart(productId){
+        console.log("removing " + productId);
+
 }
 
 async function postData(url, data){
