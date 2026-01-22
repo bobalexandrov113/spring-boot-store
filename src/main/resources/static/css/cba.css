@@ -45,12 +45,20 @@
 md-elevated-button {
     width: 200px;
     margin-left: 8px;
+    margin-right: 8px;
+    margin-top: 8px;
+    margin-bottom: 8px;
 }
 md-outlined-text-field {
     margin-bottom: 16px;
     margin-left: 8px;
     margin-top: 8px;
     margin-right: 8px;
+}
+h2 {
+    font-family: var(--md-ref-typeface-brand);
+
+    color: green;
 }
 table {
     border-collapse: collapse;

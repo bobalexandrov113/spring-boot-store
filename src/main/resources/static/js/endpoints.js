@@ -122,14 +122,14 @@ async function getProtectedResource(protectedautUrl, bearerToken, method, CACHE_
     }
 }
 
-function createTable(data){
+function createTable(data, header){
     //check whether we are dealing with an array
     if(!Array.isArray(data) || data.length == 0){
         document.getElementById("data-container").innerHTML = "Failed to create table";
         return;
     }
     const headers = Object.keys(data[0]);
-    let html = "<table><thead><tr>";
+    let html = "<h2>"+header+"</h2><table><thead><tr>";
     headers.forEach(header => {
         html += `<th>${header}</th>`;
     });
@@ -214,16 +214,24 @@ async function getShoppingPage  (){
 
     leftDiv.id = 'lp';
 
+
     await getProductsInList(leftDiv );
     const  dropDownList = document.getElementById('productsSelect');
+    dropDownList.label = "select product from list";
     leftDiv.appendChild(dropDownList);
     container.appendChild(leftDiv);
+
+
 
     const rightDiv = document.createElement('div');
     rightDiv.id = 'rp';
 
     const verticalContainer = document.createElement('div');
     verticalContainer.classList.add('distibuted-stack');
+
+    const headerDiv = document.createElement('div');
+    headerDiv.innerHTML="<center><h3>Product Details</h3></center>";
+    verticalContainer.appendChild(headerDiv);
 
     const firstRow = document.createElement('div');
     const productField = document.createElement('md-outlined-text-field');
@@ -263,9 +271,9 @@ async function getShoppingPage  (){
     };
 
     addItemButton.addEventListener('click', handleClickCartButton);
-    addItemButton.textContent = 'Add Item';
+    addItemButton.textContent = 'Add item to cart';
 
-    secondRow.appendChild(addItemButton);
+    firstRow.appendChild(addItemButton);
     verticalContainer.appendChild(secondRow);
 
     rightDiv.appendChild(verticalContainer);
@@ -314,7 +322,7 @@ async function getShoppingPage  (){
 async function getProducts(){
     const outputElement = document.getElementById('output');
     const dataContainer = document.getElementById('data-container');
-    outputElement.innerHTML = '';
+    outputElement.innerHTML = 'status: fetching data';
     dataContainer.innerHTML = '';
     const bearerToken = await getToken();
     outputElement.innerHTML = 'fetching products...';
@@ -323,9 +331,9 @@ async function getProducts(){
     const CACHE_KEY = 'apiProductsCache';
     try{
         const data = await getProtectedResource(protectedApiUrl, bearerToken, method, CACHE_KEY);
-        createTable(data);
-        //createDropDownList(data, 'productsSelect','data-container');
-        outputElement.innerHTML = '<h2>Products</h2>';
+        const header = "Products list";
+        createTable(data, header);
+       outputElement.innerHTML = 'status: products list is available.';
     }
     catch(error){
         console.error(error);
