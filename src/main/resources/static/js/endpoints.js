@@ -202,13 +202,13 @@ async function getProductsInList( container){
 
 async function getShoppingPage  (){
 
-    const tableElement = document.getElementById('data-container');
-    tableElement.innerHTML = '';
+    const dataContainer = document.getElementById('data-container');
+    dataContainer.innerHTML = '';
 
 
     const container = document.createElement('div');
     container.classList.add('container');
-    tableElement.appendChild(container);
+    dataContainer.appendChild(container);
 
    const leftDiv = document.createElement('div');
 
@@ -300,9 +300,9 @@ async function getShoppingPage  (){
 
 async function getProducts(){
     const outputElement = document.getElementById('output');
-    const tableElement = document.getElementById('data-container');
+    const dataContainer = document.getElementById('data-container');
     outputElement.innerHTML = '';
-    tableElement.innerHTML = '';
+    dataContainer.innerHTML = '';
     const bearerToken = await getToken();
     outputElement.innerHTML = 'fetching products...';
     const protectedApiUrl = baseUrl + "/products";
