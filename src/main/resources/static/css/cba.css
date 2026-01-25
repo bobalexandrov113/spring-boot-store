@@ -41,6 +41,7 @@
 :root {
     --md-ref-typeface-brand: 'Open Sans';
     --md-ref-typeface-plain: 'Open Sans';
+    color-scheme: light dark;
 }
 md-elevated-button {
     width: 200px;
@@ -54,10 +55,25 @@ md-outlined-text-field {
     margin-left: 8px;
     margin-top: 8px;
     margin-right: 8px;
+    --md-outlined-text-color: green;
+    --md-outlined-text-color-hover: green;
+    --md-outlined-text-color-active: green;
+    --md-outlined-text-color-disabled: red;
+    --md-outlined-text-field-input-text-color: green;
+    --md-outlined-text-field-focus-input-text-color: green;
+
+}
+md-list {
+    display: flex;
+    --md-list-color: green;
+}
+
+md-outlined-select {
+    --md-outlined-text-color-color: green;
+    --md-outlined-text-color-hover: green;
 }
 h2 {
     font-family: var(--md-ref-typeface-brand);
-
     color: green;
 }
 table {
@@ -73,4 +89,7 @@ th,td {
 }
 th {
     background-color: #99C2C2;
+}
+pre {
+    color: green;
 }

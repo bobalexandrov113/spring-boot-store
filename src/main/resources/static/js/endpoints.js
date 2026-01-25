@@ -122,6 +122,34 @@ async function getProtectedResource(protectedautUrl, bearerToken, method, CACHE_
     }
 }
 
+
+
+async function postProtectedResource(protectedautUrl, bearerToken, data){
+
+       console.log(protectedautUrl);
+       console.log(bearerToken);
+       console.log(JSON.stringify(data));
+        const dataResponse = await fetch(protectedautUrl, {
+            method: 'POST',
+            headers: new Headers({"Accept": "application/json", "Content-Type": "application/json","Authorization": `Bearer ${bearerToken}`}),
+            body: JSON.stringify(data),
+        });
+        if(dataResponse.ok)
+        {
+            const response = await dataResponse.json();
+            console.log(response.checkoutUrl);
+            return response;
+        }
+        else
+        {
+            throw new Error("failed to POST protected resource");
+        }
+
+}
+
+
+
+
 function createTable(data, header){
     //check whether we are dealing with an array
     if(!Array.isArray(data) || data.length == 0){
@@ -299,12 +327,6 @@ async function getShoppingPage  (){
 
     const cartItemList = document.createElement('md-list');
 
-
-
-
-
-
-
     cartItemList.id = 'cartItemList';
 
     cartListItem1 = document.createElement('md-list-item');
@@ -313,7 +335,34 @@ async function getShoppingPage  (){
     divider = document.createElement('md-divider');
     cartItemList.appendChild(divider);
 
+
+    // checkout button and link
+
+    const checkoutOrderButton = document.createElement('md-elevated-button');
+    checkoutOrderButton.id = 'checkoutOrderButton';
+
+
+
+    const  handleClickCheckoutButton = async(event) => {
+        await checkoutOrder();
+        // console.log("Click on Item Button");
+    };
+
+    checkoutOrderButton.addEventListener('click', handleClickCheckoutButton);
+    checkoutOrderButton.textContent = 'Checkout';
+
+
+
+    const linkDiv = document.createElement('div');
+    linkDiv.id = 'linkDiv';
+
+
+    cartDiv.appendChild(checkoutOrderButton);
+    cartDiv.appendChild(linkDiv);
+
     cartDiv.appendChild(cartItemList);
+
+
     container.appendChild(cartDiv);
 
 
@@ -513,5 +562,19 @@ async function populateCartList(cartItemList, cartField){
         cartListItem.addEventListener('click', handleClickCartList);
         cartItemList.appendChild(cartListItem);
     })
+
+}
+
+async function checkoutOrder(){
+    console.log("Checkout order");
+    const cartId = sessionStorage.getItem('CART_ID');
+    const url =  baseUrl + "/checkout";
+    const cartInfo = { cartId:cartId };
+    const bearerToken = await getToken();
+    const response = await postProtectedResource(url,bearerToken,cartInfo);
+    console.log("got checkout URL as : " + response.checkoutUrl);
+    window.open(response.checkoutUrl);
+
+
 
 }

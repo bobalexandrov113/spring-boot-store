@@ -12,3 +12,7 @@ spring:
 websiteUrl: http://localhost:8080
 env: development
 baseUrl:
+
+stripe:
+  secretKey: ${STRIPE_SECRET_KEY}
+  webhookSecretKey: whsec_06c5f978b2a64802531c3cfc3e3f9c021c4d28ef67b991b84d5bfbf7b48afe15

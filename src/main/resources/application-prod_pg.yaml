@@ -23,3 +23,7 @@ server:
 springdoc:
   swagger-ui:
     url: ${websiteUrl}/swagger-ui/index.html
+
+stripe:
+  secretKey: ${STRIPE_SECRET_KEY}
+  webhookSecretKey: ${STRIPE_WEBHOOK_SECRET_KEY}
