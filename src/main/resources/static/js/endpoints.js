@@ -6,11 +6,10 @@ async function loginAndGetToken() {
     if (!outputElement) {
         throw new Error("No output element found");
     }
-    // const username = document.getElementById('username').value;
-    // const password = document.getElementById('password').value;
+    const username = document.getElementById('username').value;
+    const password = document.getElementById('password').value;
 
-    const username = 'boris.alexandrov@hotmail.ca';
-    const password = '456789';
+
 
     const tokenUrl = baseUrl + "/auth/login";
 
