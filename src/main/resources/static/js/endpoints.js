@@ -121,8 +121,6 @@ async function getProtectedResource(protectedautUrl, bearerToken, method, CACHE_
     }
 }
 
-
-
 async function postProtectedResource(protectedautUrl, bearerToken, data){
 
        console.log(protectedautUrl);
@@ -145,9 +143,6 @@ async function postProtectedResource(protectedautUrl, bearerToken, data){
         }
 
 }
-
-
-
 
 function createTable(data, header){
     //check whether we are dealing with an array
