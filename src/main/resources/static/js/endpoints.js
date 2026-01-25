@@ -573,6 +573,10 @@ async function checkoutOrder(){
     const response = await postProtectedResource(url,bearerToken,cartInfo);
     console.log("got checkout URL as : " + response.checkoutUrl);
     window.open(response.checkoutUrl);
+    const cartItemList = document.getElementById('cartItemList');
+    const cartField = document.getElementById('cartField');
+    populateCartList(cartItemList,cartField);
+
 
 
 

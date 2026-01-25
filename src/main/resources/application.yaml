@@ -6,4 +6,4 @@ spring:
     accessTokenExpiration: 900 # 15m
     refreshTokenExpiration: 604800 # 7d
   profiles:
-    active: prod_pg
+    active: dev_pg
