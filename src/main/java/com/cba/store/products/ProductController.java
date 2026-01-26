@@ -1,6 +1,7 @@
 package com.cba.store.products;
 
 import com.cba.store.common.ErrorDto;
+import com.cba.store.entities.Image;
 import com.cba.store.entities.Product;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -73,6 +74,17 @@ public class ProductController {
         );
 
     }
+
+    @GetMapping("/images/{id}")
+    public ResponseEntity<List<Image>> getProductImages(@PathVariable Long id)
+    {
+        List<Image> images= productRepository.findImagesByProductId(id);
+        if(images.isEmpty())
+            return ResponseEntity.notFound().build();
+        return ResponseEntity.ok(images);
+    }
+
+
 
     @GetMapping("/{id}")
     public ResponseEntity<ProductDto> getProduct(@PathVariable Long id)

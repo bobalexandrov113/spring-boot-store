@@ -17,5 +17,5 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     boolean existsByName(@NotBlank String name);
 
     @Query(value = "select i.* from images i join products_images pi on pi.image_id=i.id and pi.product_id=:productId",nativeQuery = true)
-    public List<Image> findImagesByProductId(int productId);
+    public List<Image> findImagesByProductId(Long productId);
 }
