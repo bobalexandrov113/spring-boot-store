@@ -414,13 +414,42 @@ async function getProduct( productId){
         let imageLocation="https://www.custom-built-apps.com/img/";
 
         //filenames are coming from database
-        let imageFile= "SelectJDK.png";
-        imageLocation += imageFile;
+        let html="";
+        try {
+            const imageDiv = document.getElementById('imageDiv');
+            imageDiv.innerHTML = "<h1 class='note_class'>Product image</h1>";
+            const imagesUrl = baseUrl + "/products/images/" + productId;
+            const IMG_CACHE_KEY = 'apiProductImagesCache' + productId;
+            const imagedata = await getProtectedResource(imagesUrl, bearerToken, method, IMG_CACHE_KEY);
+            console.log(imagedata[0]);
 
-        const imageDiv = document.getElementById('imageDiv');
-        if(imageDiv && imageFile){
-            imageDiv.innerHTML = "<img src=\"" + imageLocation + "\"></img>";
+                const headers = Object.keys(imagedata[0]);
+
+
+                imagedata.forEach(row => {
+                    let imageFile = `${row[headers[1]]}`;
+                    if (imageFile) {
+                        imageFile = imageLocation + imageFile;
+                        html += "<img src=\"";
+                        html += imageFile + `\" alt="${row[headers[2]]}" width=\"${row[headers[3]]}\" height=\"${row[headers[4]]}\" ></img>`;
+                    }
+                    console.log(html);
+                });
+
+
+                imageDiv.innerHTML = html;
+
+
         }
+        catch(error){
+            console.log(error)
+        }
+
+
+
+
+
+
 
 
     }
