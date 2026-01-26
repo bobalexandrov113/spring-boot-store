@@ -6,9 +6,11 @@ async function loginAndGetToken() {
     if (!outputElement) {
         throw new Error("No output element found");
     }
-    const username = document.getElementById('username').value;
-    const password = document.getElementById('password').value;
+    // const username = document.getElementById('username').value;
+    // const password = document.getElementById('password').value;
 
+    const username = 'boris.alexandrov@hotmail.ca';
+    const password = '456789';
 
 
     const tokenUrl = baseUrl + "/auth/login";
@@ -268,6 +270,21 @@ async function getShoppingPage  (){
     productPriceField.id='product_price';
     productPriceField.label="product price";
     firstRow.appendChild(productPriceField);
+    const addItemButton = document.createElement('md-elevated-button');
+    addItemButton.id = 'addItemButton';
+
+
+
+    const  handleClickCartButton = async(event) => {
+        await addItemToCart();
+        // console.log("Click on Item Button");
+    };
+
+    addItemButton.addEventListener('click', handleClickCartButton);
+    addItemButton.textContent = 'Add item to cart';
+
+    firstRow.appendChild(addItemButton);
+
     verticalContainer.appendChild(firstRow);
     rightDiv.appendChild(verticalContainer);
 
@@ -282,21 +299,15 @@ async function getShoppingPage  (){
     productDescriptionField.resize='vertical';
     secondRow.appendChild(productDescriptionField);
 
-    const addItemButton = document.createElement('md-elevated-button');
-    addItemButton.id = 'addItemButton';
 
-
-
-    const  handleClickCartButton = async(event) => {
-            await addItemToCart();
-            // console.log("Click on Item Button");
-    };
-
-    addItemButton.addEventListener('click', handleClickCartButton);
-    addItemButton.textContent = 'Add item to cart';
-
-    firstRow.appendChild(addItemButton);
     verticalContainer.appendChild(secondRow);
+
+    const thirdRow = document.createElement('div');
+    thirdRow.id = 'imageDiv';
+    thirdRow.innerHTML="<h1 class='note_class'>Product image</h1>";
+
+
+    verticalContainer.appendChild(thirdRow);
 
     rightDiv.appendChild(verticalContainer);
 
@@ -330,7 +341,7 @@ async function getShoppingPage  (){
     cartItemList.appendChild(divider);
 
 
-    // checkout button and link
+    // checkout button
 
     const checkoutOrderButton = document.createElement('md-elevated-button');
     checkoutOrderButton.id = 'checkoutOrderButton';
@@ -347,12 +358,11 @@ async function getShoppingPage  (){
 
 
 
-    const linkDiv = document.createElement('div');
-    linkDiv.id = 'linkDiv';
+
 
 
     cartDiv.appendChild(checkoutOrderButton);
-    cartDiv.appendChild(linkDiv);
+
 
     cartDiv.appendChild(cartItemList);
 
@@ -400,6 +410,18 @@ async function getProduct( productId){
         productDescription.value = data['description'];
         productPrice.value = data['price'];
         // console.log(data);
+
+        let imageLocation="https://www.custom-built-apps.com/img/";
+
+        //filenames are coming from database
+        let imageFile= "SelectJDK.png";
+        imageLocation += imageFile;
+
+        const imageDiv = document.getElementById('imageDiv');
+        if(imageDiv && imageFile){
+            imageDiv.innerHTML = "<img src=\"" + imageLocation + "\"></img>";
+        }
+
 
     }
     catch(error){
